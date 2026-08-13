@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pastime - GitHub Activity Graph Theme Builder</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="glass-container">
+    <header>
+      <h1>Pastime</h1>
+      <p>Design your custom GitHub Activity Graph theme.</p>
+    </header>
+
+    <main>
+      <section class="preview-section">
+        <h2>Live Preview</h2>
+        <div class="theme-toggle">
+          <button id="previewLight" class="active">Light Preview</button>
+          <button id="previewDark">Dark Preview</button>
+        </div>
+        <div class="svg-container" id="svgContainer">
+          <!-- SVG will be injected here by JS -->
+        </div>
+      </section>
+
+      <section class="controls-section">
+        <div class="theme-panel">
+          <h3>Light Theme Colors</h3>
+          <div class="color-pickers" id="lightPickers">
+            <div class="picker-group"><label>Level 0</label><input type="color" value="#ebedf0" id="l0"></div>
+            <div class="picker-group"><label>Level 1</label><input type="color" value="#9be9a8" id="l1"></div>
+            <div class="picker-group"><label>Level 2</label><input type="color" value="#40c463" id="l2"></div>
+            <div class="picker-group"><label>Level 3</label><input type="color" value="#30a14e" id="l3"></div>
+            <div class="picker-group"><label>Level 4</label><input type="color" value="#216e39" id="l4"></div>
+          </div>
+        </div>
+
+        <div class="theme-panel">
+          <h3>Dark Theme Colors</h3>
+          <div class="color-pickers" id="darkPickers">
+            <div class="picker-group"><label>Level 0</label><input type="color" value="#161b22" id="d0"></div>
+            <div class="picker-group"><label>Level 1</label><input type="color" value="#0e4429" id="d1"></div>
+            <div class="picker-group"><label>Level 2</label><input type="color" value="#006d32" id="d2"></div>
+            <div class="picker-group"><label>Level 3</label><input type="color" value="#26a641" id="d3"></div>
+            <div class="picker-group"><label>Level 4</label><input type="color" value="#39d353" id="d4"></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="export-section">
+        <h2>Copy Configuration</h2>
+        <p>Paste this into the <code>env</code> section of your <code>.github/workflows/update-graph.yml</code> file:</p>
+        <div class="code-block-container">
+          <pre><code id="exportCode"></code></pre>
+          <button id="copyBtn" class="copy-btn">Copy Code</button>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
