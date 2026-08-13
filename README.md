@@ -1,5 +1,7 @@
 # Pastime - GitHub Activity Graph Customizer
 
+[![Website](https://img.shields.io/badge/Website-Live_Theme_Builder-blue?style=for-the-badge)](https://Liyfez.github.io/Pastime/)
+
 Pastime is a tool to perfectly customize your GitHub Activity Graph and embed it in your Profile README.
 
 Unlike other tools, Pastime supports **Private Commits** and exact **Current Calendar Year** mapping by running securely inside your own GitHub Actions! It exactly replicates the GitHub heat map calculation (quartiles) to ensure your custom colors apply flawlessly.

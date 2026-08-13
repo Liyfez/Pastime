@@ -3,62 +3,104 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Pastime - GitHub Activity Graph Theme Builder</title>
-  <link rel="stylesheet" href="style.css">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+  <title>Pastime - Custom GitHub Activity Graph</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    
+    /* Input color styling to make it look clean */
+    input[type="color"] {
+      -webkit-appearance: none;
+      border: none;
+      width: 100%;
+      height: 64px;
+      border-radius: 12px;
+      cursor: pointer;
+      background: transparent;
+      padding: 0;
+    }
+    input[type="color"]::-webkit-color-swatch-wrapper {
+      padding: 0;
+    }
+    input[type="color"]::-webkit-color-swatch {
+      border: 2px solid #e5e7eb;
+      border-radius: 12px;
+    }
+    .dark input[type="color"]::-webkit-color-swatch {
+      border-color: #374151;
+    }
+
+    /* Auto theme detection logic for preview */
+    .preview-container {
+      background-color: #ffffff;
+      border-color: #e5e7eb;
+    }
+    @media (prefers-color-scheme: dark) {
+      .preview-container {
+        background-color: #0d1117; /* GitHub Dark BG */
+        border-color: #30363d;
+      }
+    }
+  </style>
 </head>
-<body>
-  <div class="glass-container">
-    <header>
-      <h1>Pastime</h1>
-      <p>Design your custom GitHub Activity Graph theme.</p>
+<body class="bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 min-h-screen transition-colors duration-200">
+  
+  <div class="max-w-4xl mx-auto px-4 py-12">
+    
+    <!-- Header -->
+    <header class="text-center mb-12">
+      <h1 class="text-4xl md:text-5xl font-extrabold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-purple-600 mb-4">
+        Pastime
+      </h1>
+      <p class="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+        Generate a perfectly scaled GitHub Activity Graph theme with a single color. Supports both Light and Dark mode automatically.
+      </p>
     </header>
 
-    <main>
-      <section class="preview-section">
-        <h2>Live Preview</h2>
-        <div class="theme-toggle">
-          <button id="previewLight" class="active">Light Preview</button>
-          <button id="previewDark">Dark Preview</button>
-        </div>
-        <div class="svg-container" id="svgContainer">
-          <!-- SVG will be injected here by JS -->
+    <main class="space-y-8">
+      
+      <!-- Color Picker Card -->
+      <section class="bg-white dark:bg-gray-800 rounded-2xl p-6 md:p-8 shadow-sm border border-gray-200 dark:border-gray-700">
+        <h2 class="text-xl font-semibold mb-4 text-center">Pick Your Brand Color</h2>
+        <div class="max-w-xs mx-auto">
+          <input type="color" id="primaryColor" value="#3b82f6" title="Choose a primary color" class="shadow-sm transition-transform hover:scale-105 active:scale-95">
+          <p class="text-center text-sm text-gray-500 dark:text-gray-400 mt-3">All intensity levels are calculated automatically.</p>
         </div>
       </section>
 
-      <section class="controls-section">
-        <div class="theme-panel">
-          <h3>Light Theme Colors</h3>
-          <div class="color-pickers" id="lightPickers">
-            <div class="picker-group"><label>Level 0</label><input type="color" value="#ebedf0" id="l0"></div>
-            <div class="picker-group"><label>Level 1</label><input type="color" value="#9be9a8" id="l1"></div>
-            <div class="picker-group"><label>Level 2</label><input type="color" value="#40c463" id="l2"></div>
-            <div class="picker-group"><label>Level 3</label><input type="color" value="#30a14e" id="l3"></div>
-            <div class="picker-group"><label>Level 4</label><input type="color" value="#216e39" id="l4"></div>
+      <!-- Live Preview Card -->
+      <section class="preview-container rounded-2xl p-6 shadow-sm border overflow-x-auto relative">
+        <div class="absolute top-4 left-4 text-xs font-medium text-gray-400 uppercase tracking-wider">Live Preview</div>
+        <div class="mt-6 flex justify-center min-w-[700px]">
+          <div id="svgContainer"></div>
+        </div>
+        <p class="text-center text-xs text-gray-400 mt-4">This preview automatically matches your system's light/dark mode setting.</p>
+      </section>
+
+      <!-- Code Export Card -->
+      <section class="bg-white dark:bg-gray-800 rounded-2xl p-6 md:p-8 shadow-sm border border-gray-200 dark:border-gray-700">
+        <div class="flex justify-between items-end mb-4">
+          <div>
+            <h2 class="text-xl font-semibold">GitHub Actions Configuration</h2>
+            <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Paste this into the <code>env</code> section of your <code>update-graph.yml</code> workflow.</p>
           </div>
+          <button id="copyBtn" class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-lg font-medium text-sm transition-colors shadow-sm active:scale-95 flex-shrink-0">
+            Copy Code
+          </button>
         </div>
-
-        <div class="theme-panel">
-          <h3>Dark Theme Colors</h3>
-          <div class="color-pickers" id="darkPickers">
-            <div class="picker-group"><label>Level 0</label><input type="color" value="#161b22" id="d0"></div>
-            <div class="picker-group"><label>Level 1</label><input type="color" value="#0e4429" id="d1"></div>
-            <div class="picker-group"><label>Level 2</label><input type="color" value="#006d32" id="d2"></div>
-            <div class="picker-group"><label>Level 3</label><input type="color" value="#26a641" id="d3"></div>
-            <div class="picker-group"><label>Level 4</label><input type="color" value="#39d353" id="d4"></div>
-          </div>
+        
+        <div class="bg-gray-900 rounded-xl p-4 overflow-x-auto border border-gray-700">
+          <pre class="text-blue-300 font-mono text-sm leading-relaxed"><code id="exportCode"></code></pre>
         </div>
       </section>
-
-      <section class="export-section">
-        <h2>Copy Configuration</h2>
-        <p>Paste this into the <code>env</code> section of your <code>.github/workflows/update-graph.yml</code> file:</p>
-        <div class="code-block-container">
-          <pre><code id="exportCode"></code></pre>
-          <button id="copyBtn" class="copy-btn">Copy Code</button>
-        </div>
-      </section>
+      
     </main>
+    
+    <footer class="mt-16 text-center text-gray-500 dark:text-gray-400 text-sm">
+      <p>Powered by Pastime &bull; 100% Client-Side &bull; No API required</p>
+    </footer>
+
   </div>
 
   <script src="script.js"></script>
