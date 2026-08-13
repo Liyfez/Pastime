@@ -87,7 +87,7 @@
       <!-- Color Picker Section -->
       <section class="bg-cardDark rounded-3xl p-8 shadow-xl border border-zinc-800">
         <div class="max-w-md mx-auto text-center">
-          <h2 class="text-xl font-medium mb-6 text-textBright">1. Choose Your Theme Color</h2>
+          <h2 class="text-xl font-medium mb-6 text-textBright"><span class="text-brandYellow font-bold">Step 1:</span> Choose Your Theme Color</h2>
           <div class="relative group">
             <input type="color" id="primaryColor" value="#fbbf24" title="Choose a primary color" class="shadow-inner transition-transform group-hover:scale-[1.02] active:scale-95 duration-200">
           </div>
@@ -103,49 +103,65 @@
         </div>
         
         <div class="preview-container rounded-2xl p-6 shadow-inner border overflow-x-auto custom-scroll relative">
-          <div class="flex justify-center min-w-[700px]">
+          <!-- Removed min-w-[700px] to allow SVG to render without clipping on mobile -->
+          <div class="flex justify-start md:justify-center w-full">
             <div id="svgContainer" class="transform scale-100 origin-left md:origin-center"></div>
           </div>
         </div>
         <p class="text-center text-xs text-textSoft mt-5">This graph instantly reacts to your system's Dark/Light mode settings.</p>
       </section>
 
+      <!-- Warning Banner -->
+      <div class="bg-red-500/10 border border-red-500/30 rounded-2xl p-6 text-center max-w-2xl mx-auto shadow-sm">
+        <h3 class="text-red-400 font-bold mb-2">⚠️ STOP! DO NOT PASTE YAML CODE INTO YOUR PROFILE</h3>
+        <p class="text-sm text-red-300">If you paste the code from Step 2 into your profile README, it will just show up as broken text. You must follow the exact instructions below.</p>
+      </div>
+
       <!-- Step 2: GitHub Actions Export Section -->
       <section class="bg-cardDark rounded-3xl p-8 shadow-xl border border-zinc-800">
         <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-6 gap-4">
           <div>
-            <h2 class="text-xl font-medium text-textBright">2. Apply to GitHub Actions</h2>
-            <p class="text-sm text-textSoft mt-2">Paste this into the <code>env</code> section of the <code>.github/workflows/update-graph.yml</code> file in your forked Pastime repository.</p>
+            <h2 class="text-xl font-medium text-textBright"><span class="text-brandYellow font-bold">Step 2:</span> Apply to GitHub Actions</h2>
+            <div class="text-sm text-textSoft mt-4 space-y-2">
+              <p>1. Go to your forked <strong>Pastime</strong> repository on GitHub.</p>
+              <p>2. Open the file located at: <code class="text-brandYellow bg-zinc-800 px-2 py-1 rounded">.github/workflows/update-graph.yml</code></p>
+              <p>3. Delete the old <code>env:</code> block inside that file, and replace it with this code:</p>
+            </div>
           </div>
-          <button id="copyActionBtn" class="bg-brandYellow hover:bg-yellow-300 text-bgDark px-6 py-3 rounded-xl font-semibold text-sm transition-all shadow-md active:scale-95 flex-shrink-0">
+          <button id="copyActionBtn" class="bg-zinc-800 hover:bg-zinc-700 text-brandYellow border border-zinc-700 px-6 py-3 rounded-xl font-semibold text-sm transition-all shadow-md active:scale-95 flex-shrink-0">
             Copy Workflow YAML
           </button>
         </div>
         
         <div class="bg-bgDark rounded-2xl p-6 overflow-x-auto border border-zinc-800 shadow-inner">
-          <pre class="text-yellow-100 font-mono text-sm leading-relaxed"><code id="exportActionCode"></code></pre>
+          <pre class="text-zinc-300 font-mono text-sm leading-relaxed"><code id="exportActionCode"></code></pre>
         </div>
       </section>
 
       <!-- Step 3: Markdown Export Section -->
-      <section class="bg-cardDark rounded-3xl p-8 shadow-xl border border-zinc-800">
-        <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-6 gap-4">
+      <section class="bg-brandYellow/10 rounded-3xl p-8 shadow-xl border border-brandYellow/30 relative overflow-hidden">
+        <div class="absolute top-0 right-0 w-32 h-32 bg-brandYellow/10 rounded-bl-[100px] pointer-events-none"></div>
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-6 gap-4 relative z-10">
           <div>
-            <h2 class="text-xl font-medium text-textBright">3. Add to your Profile</h2>
-            <p class="text-sm text-textSoft mt-2">Once the GitHub Action runs, paste this Markdown code into your Profile <code>README.md</code> to display the graph!</p>
+            <h2 class="text-xl font-medium text-textBright"><span class="text-brandYellow font-bold">Step 3:</span> Add to your Profile</h2>
+            <div class="text-sm text-textSoft mt-4 space-y-2">
+              <p>1. Wait for the GitHub Action from Step 2 to finish running.</p>
+              <p>2. Type your GitHub Username below to generate your image link.</p>
+              <p>3. Go to your main <strong>Profile README</strong> (the one with just your username) and paste this Markdown code!</p>
+            </div>
           </div>
-          <button id="copyProfileBtn" class="bg-brandYellow hover:bg-yellow-300 text-bgDark px-6 py-3 rounded-xl font-semibold text-sm transition-all shadow-md active:scale-95 flex-shrink-0">
+          <button id="copyProfileBtn" class="bg-brandYellow hover:bg-yellow-400 text-bgDark px-6 py-3 rounded-xl font-semibold text-sm transition-all shadow-md active:scale-95 flex-shrink-0">
             Copy Markdown Link
           </button>
         </div>
         
-        <div class="bg-bgDark rounded-2xl p-6 overflow-x-auto border border-zinc-800 shadow-inner flex items-center gap-2">
+        <div class="bg-bgDark rounded-2xl p-6 overflow-x-auto border border-zinc-800 shadow-inner flex items-center gap-2 relative z-10">
           <span class="text-textSoft font-mono text-sm">Username:</span>
-          <input type="text" id="usernameInput" placeholder="Liyfez" class="bg-transparent border-b border-zinc-700 text-brandYellow font-mono text-sm focus:outline-none focus:border-brandYellow px-1 py-0.5 w-32">
+          <input type="text" id="usernameInput" placeholder="Liyfez" class="bg-transparent border-b border-zinc-700 text-brandYellow font-mono text-sm focus:outline-none focus:border-brandYellow px-1 py-0.5 w-48">
         </div>
         
-        <div class="bg-bgDark rounded-2xl p-6 overflow-x-auto border border-zinc-800 shadow-inner mt-4">
-          <pre class="text-yellow-100 font-mono text-sm leading-relaxed"><code id="exportProfileCode"></code></pre>
+        <div class="bg-bgDark rounded-2xl p-6 overflow-x-auto border border-zinc-800 shadow-inner mt-4 relative z-10">
+          <pre class="text-brandYellow font-mono text-sm leading-relaxed"><code id="exportProfileCode"></code></pre>
         </div>
       </section>
       
