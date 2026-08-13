@@ -1,4 +1,3 @@
-// Math utility to convert HEX to HSL
 function hexToHSL(hex) {
   let r = 0, g = 0, b = 0;
   if (hex.length === 4) {
@@ -14,7 +13,7 @@ function hexToHSL(hex) {
   let max = Math.max(r, g, b), min = Math.min(r, g, b);
   let h, s, l = (max + min) / 2;
   if (max === min) {
-    h = s = 0; // achromatic
+    h = s = 0; 
   } else {
     let d = max - min;
     s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
@@ -28,7 +27,6 @@ function hexToHSL(hex) {
   return { h: h * 360, s: s * 100, l: l * 100 };
 }
 
-// Math utility to convert HSL to HEX
 function hslToHex(h, s, l) {
   l /= 100;
   const a = s * Math.min(l, 1 - l) / 100;
@@ -40,28 +38,25 @@ function hslToHex(h, s, l) {
   return `#${f(0)}${f(8)}${f(4)}`;
 }
 
-// Generate scaled colors from a base hex
 function generateColorScales(hex) {
   const hsl = hexToHSL(hex);
   
-  // Light Theme: Level 0 (bg) is gray, then 4 shades of the color
   const lightBg = '#ebedf0';
   const lightColors = [
     lightBg,
-    hslToHex(hsl.h, hsl.s, Math.max(hsl.l, 80)), // L1: Very Light
-    hslToHex(hsl.h, hsl.s, Math.max(hsl.l - 10, 65)), // L2: Light
-    hslToHex(hsl.h, hsl.s, Math.max(hsl.l - 20, 50)), // L3: Medium
-    hslToHex(hsl.h, hsl.s, Math.max(hsl.l - 35, 35)), // L4: Dark
+    hslToHex(hsl.h, hsl.s, Math.max(hsl.l, 80)),
+    hslToHex(hsl.h, hsl.s, Math.max(hsl.l - 10, 65)),
+    hslToHex(hsl.h, hsl.s, Math.max(hsl.l - 20, 50)),
+    hslToHex(hsl.h, hsl.s, Math.max(hsl.l - 35, 35)),
   ];
 
-  // Dark Theme: Level 0 (bg) is dark gray, then 4 shades of the color
   const darkBg = '#161b22';
   const darkColors = [
     darkBg,
-    hslToHex(hsl.h, hsl.s, Math.min(hsl.l - 20, 20)), // L1: Very Dark
-    hslToHex(hsl.h, hsl.s, Math.min(hsl.l, 35)),      // L2: Dark
-    hslToHex(hsl.h, hsl.s, Math.min(hsl.l + 15, 50)), // L3: Medium
-    hslToHex(hsl.h, hsl.s, Math.min(hsl.l + 30, 65)), // L4: Bright
+    hslToHex(hsl.h, hsl.s, Math.min(hsl.l - 20, 20)),
+    hslToHex(hsl.h, hsl.s, Math.min(hsl.l, 35)),
+    hslToHex(hsl.h, hsl.s, Math.min(hsl.l + 15, 50)),
+    hslToHex(hsl.h, hsl.s, Math.min(hsl.l + 30, 65)),
   ];
 
   return { lightColors, darkColors };
@@ -76,12 +71,14 @@ document.addEventListener('DOMContentLoaded', () => {
   const height = 7 * (cellSize + cellGap) + paddingY + 10;
 
   const svgContainer = document.getElementById('svgContainer');
-  const exportCode = document.getElementById('exportCode');
+  const exportActionCode = document.getElementById('exportActionCode');
+  const exportProfileCode = document.getElementById('exportProfileCode');
   const colorPicker = document.getElementById('primaryColor');
+  const usernameInput = document.getElementById('usernameInput');
 
   colorPicker.addEventListener('input', render);
+  usernameInput.addEventListener('input', renderProfileCode);
 
-  // Generate fake data once for preview
   const fakeWeeks = [];
   for (let i = 0; i < 53; i++) {
     const days = [];
@@ -97,9 +94,14 @@ document.addEventListener('DOMContentLoaded', () => {
     fakeWeeks.push({ contributionDays: days });
   }
 
+  function renderProfileCode() {
+    const username = usernameInput.value.trim() || 'YOUR_USERNAME';
+    exportProfileCode.textContent = `![My Custom Activity Graph](https://raw.githubusercontent.com/${username}/Pastime/main/activity-graph.svg)`;
+  }
+
   function render() {
     let hex = colorPicker.value;
-    if (!hex) hex = '#fbbf24'; // Default to yellow
+    if (!hex) hex = '#fbbf24';
     const { lightColors, darkColors } = generateColorScales(hex);
 
     let rects = '';
@@ -123,20 +125,17 @@ document.addEventListener('DOMContentLoaded', () => {
       <text class="label" x="-25" y="${5 * (cellSize + cellGap) + 9}">Fri</text>
     `;
 
-    // SVG generation with adaptive media query built-in!
     let svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${width} ${height}" width="${width}" height="${height}">\n`;
     svg += `<style>\n`;
     svg += `  .day { rx: 2; ry: 2; shape-rendering: geometricPrecision; }\n`;
     svg += `  .label { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; font-size: 10px; fill: #57606a; }\n`;
     
-    // Light Mode (Default)
     svg += `  .level-0 { fill: ${lightColors[0]}; }\n`;
     svg += `  .level-1 { fill: ${lightColors[1]}; }\n`;
     svg += `  .level-2 { fill: ${lightColors[2]}; }\n`;
     svg += `  .level-3 { fill: ${lightColors[3]}; }\n`;
     svg += `  .level-4 { fill: ${lightColors[4]}; }\n`;
 
-    // Dark Mode Override (prefers-color-scheme)
     svg += `  @media (prefers-color-scheme: dark) {\n`;
     svg += `    .label { fill: #768390; }\n`;
     svg += `    .level-0 { fill: ${darkColors[0]}; }\n`;
@@ -156,23 +155,28 @@ document.addEventListener('DOMContentLoaded', () => {
 
     svgContainer.innerHTML = svg;
 
-    // Update code block
-    exportCode.textContent = 
+    exportActionCode.textContent = 
 `env:
   GITHUB_TOKEN: \${{ secrets.GH_TOKEN_FOR_GRAPH }}
   GITHUB_USERNAME: \${{ github.repository_owner }}
   LIGHT_THEME: '${lightColors.join(',')}'
   DARK_THEME: '${darkColors.join(',')}'`;
+
+    renderProfileCode();
   }
 
-  // Copy button
-  document.getElementById('copyBtn').addEventListener('click', (e) => {
-    navigator.clipboard.writeText(exportCode.textContent);
-    const btn = e.target;
-    btn.textContent = 'Copied!';
-    setTimeout(() => { btn.textContent = 'Copy Code'; }, 2000);
-  });
+  function handleCopy(btnId, targetElementId) {
+    document.getElementById(btnId).addEventListener('click', (e) => {
+      navigator.clipboard.writeText(document.getElementById(targetElementId).textContent);
+      const btn = e.target;
+      const originalText = btn.textContent;
+      btn.textContent = 'Copied!';
+      setTimeout(() => { btn.textContent = originalText; }, 2000);
+    });
+  }
 
-  // Initial render
+  handleCopy('copyActionBtn', 'exportActionCode');
+  handleCopy('copyProfileBtn', 'exportProfileCode');
+
   render();
 });

@@ -27,7 +27,6 @@
   <style>
     body { font-family: 'Inter', sans-serif; }
     
-    /* Input color styling to make it look clean */
     input[type="color"] {
       -webkit-appearance: none;
       border: none;
@@ -46,19 +45,17 @@
       border-radius: 16px;
     }
 
-    /* Auto theme detection logic for preview */
     .preview-container {
       background-color: #ffffff;
       border-color: #e5e7eb;
     }
     @media (prefers-color-scheme: dark) {
       .preview-container {
-        background-color: #0d1117; /* GitHub Dark BG */
+        background-color: #0d1117; 
         border-color: #30363d;
       }
     }
 
-    /* Scrollbar for SVG container */
     .custom-scroll::-webkit-scrollbar {
       height: 8px;
     }
@@ -76,7 +73,6 @@
   
   <div class="flex-grow max-w-5xl mx-auto px-4 py-16 w-full">
     
-    <!-- Header -->
     <header class="text-center mb-16">
       <h1 class="text-5xl md:text-6xl font-bold tracking-tight text-brandYellow mb-4">
         Pastime
@@ -91,7 +87,7 @@
       <!-- Color Picker Section -->
       <section class="bg-cardDark rounded-3xl p-8 shadow-xl border border-zinc-800">
         <div class="max-w-md mx-auto text-center">
-          <h2 class="text-xl font-medium mb-6 text-textBright">Choose Your Theme Color</h2>
+          <h2 class="text-xl font-medium mb-6 text-textBright">1. Choose Your Theme Color</h2>
           <div class="relative group">
             <input type="color" id="primaryColor" value="#fbbf24" title="Choose a primary color" class="shadow-inner transition-transform group-hover:scale-[1.02] active:scale-95 duration-200">
           </div>
@@ -106,7 +102,6 @@
           <span class="text-xs font-medium text-brandYellow bg-brandYellow/10 px-3 py-1 rounded-full border border-brandYellow/20">Auto-Theme Enabled</span>
         </div>
         
-        <!-- The actual preview window -->
         <div class="preview-container rounded-2xl p-6 shadow-inner border overflow-x-auto custom-scroll relative">
           <div class="flex justify-center min-w-[700px]">
             <div id="svgContainer" class="transform scale-100 origin-left md:origin-center"></div>
@@ -115,20 +110,42 @@
         <p class="text-center text-xs text-textSoft mt-5">This graph instantly reacts to your system's Dark/Light mode settings.</p>
       </section>
 
-      <!-- Code Export Section -->
+      <!-- Step 2: GitHub Actions Export Section -->
       <section class="bg-cardDark rounded-3xl p-8 shadow-xl border border-zinc-800">
         <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-6 gap-4">
           <div>
-            <h2 class="text-xl font-medium text-textBright">GitHub Actions Config</h2>
-            <p class="text-sm text-textSoft mt-2">Copy and paste this into the <code>env</code> section of your <code>update-graph.yml</code> workflow.</p>
+            <h2 class="text-xl font-medium text-textBright">2. Apply to GitHub Actions</h2>
+            <p class="text-sm text-textSoft mt-2">Paste this into the <code>env</code> section of the <code>.github/workflows/update-graph.yml</code> file in your forked Pastime repository.</p>
           </div>
-          <button id="copyBtn" class="bg-brandYellow hover:bg-yellow-300 text-bgDark px-6 py-3 rounded-xl font-semibold text-sm transition-all shadow-md active:scale-95 flex-shrink-0">
-            Copy Code
+          <button id="copyActionBtn" class="bg-brandYellow hover:bg-yellow-300 text-bgDark px-6 py-3 rounded-xl font-semibold text-sm transition-all shadow-md active:scale-95 flex-shrink-0">
+            Copy Workflow YAML
           </button>
         </div>
         
         <div class="bg-bgDark rounded-2xl p-6 overflow-x-auto border border-zinc-800 shadow-inner">
-          <pre class="text-yellow-100 font-mono text-sm leading-relaxed"><code id="exportCode"></code></pre>
+          <pre class="text-yellow-100 font-mono text-sm leading-relaxed"><code id="exportActionCode"></code></pre>
+        </div>
+      </section>
+
+      <!-- Step 3: Markdown Export Section -->
+      <section class="bg-cardDark rounded-3xl p-8 shadow-xl border border-zinc-800">
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-6 gap-4">
+          <div>
+            <h2 class="text-xl font-medium text-textBright">3. Add to your Profile</h2>
+            <p class="text-sm text-textSoft mt-2">Once the GitHub Action runs, paste this Markdown code into your Profile <code>README.md</code> to display the graph!</p>
+          </div>
+          <button id="copyProfileBtn" class="bg-brandYellow hover:bg-yellow-300 text-bgDark px-6 py-3 rounded-xl font-semibold text-sm transition-all shadow-md active:scale-95 flex-shrink-0">
+            Copy Markdown Link
+          </button>
+        </div>
+        
+        <div class="bg-bgDark rounded-2xl p-6 overflow-x-auto border border-zinc-800 shadow-inner flex items-center gap-2">
+          <span class="text-textSoft font-mono text-sm">Username:</span>
+          <input type="text" id="usernameInput" placeholder="Liyfez" class="bg-transparent border-b border-zinc-700 text-brandYellow font-mono text-sm focus:outline-none focus:border-brandYellow px-1 py-0.5 w-32">
+        </div>
+        
+        <div class="bg-bgDark rounded-2xl p-6 overflow-x-auto border border-zinc-800 shadow-inner mt-4">
+          <pre class="text-yellow-100 font-mono text-sm leading-relaxed"><code id="exportProfileCode"></code></pre>
         </div>
       </section>
       
