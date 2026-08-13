@@ -28,8 +28,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN_FOR_GRAPH }}
           GITHUB_USERNAME: ${{ github.repository_owner }}
-          LIGHT_THEME: '#ebedf0,#9be9a8,#40c463,#30a14e,#216e39'
-          DARK_THEME: '#161b22,#0e4429,#006d32,#26a641,#39d353'
+          LIGHT_THEME: '#ebedf0,#f9a09f,#f55956,#f1120e,#a90c0a'
+          DARK_THEME: '#161b22,#600706,#a90c0a,#f1120e,#f55956'
         run: npm start
 
       - name: Commit generated SVG
