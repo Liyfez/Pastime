@@ -95,7 +95,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function renderProfileCode() {
-    const username = usernameInput.value.trim() || 'YOUR_USERNAME';
+    const username = usernameInput.value.trim() || 'your-username';
     exportProfileCode.textContent = `![My Custom Activity Graph](https://raw.githubusercontent.com/${username}/Pastime/main/activity-graph.svg)`;
   }
 
