@@ -3,9 +3,27 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Pastime - Custom GitHub Activity Graph</title>
+  <title>Pastime - GitHub Activity Graph Customizer</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+          },
+          colors: {
+            bgDark: '#121212',
+            cardDark: '#1c1c1e',
+            textSoft: '#a1a1aa',
+            textBright: '#e4e4e7',
+            brandYellow: '#fbbf24',
+          }
+        }
+      }
+    }
+  </script>
   <style>
     body { font-family: 'Inter', sans-serif; }
     
@@ -14,8 +32,8 @@
       -webkit-appearance: none;
       border: none;
       width: 100%;
-      height: 64px;
-      border-radius: 12px;
+      height: 72px;
+      border-radius: 16px;
       cursor: pointer;
       background: transparent;
       padding: 0;
@@ -24,11 +42,8 @@
       padding: 0;
     }
     input[type="color"]::-webkit-color-swatch {
-      border: 2px solid #e5e7eb;
-      border-radius: 12px;
-    }
-    .dark input[type="color"]::-webkit-color-swatch {
-      border-color: #374151;
+      border: 2px solid #3f3f46;
+      border-radius: 16px;
     }
 
     /* Auto theme detection logic for preview */
@@ -42,66 +57,88 @@
         border-color: #30363d;
       }
     }
+
+    /* Scrollbar for SVG container */
+    .custom-scroll::-webkit-scrollbar {
+      height: 8px;
+    }
+    .custom-scroll::-webkit-scrollbar-track {
+      background: #27272a;
+      border-radius: 8px;
+    }
+    .custom-scroll::-webkit-scrollbar-thumb {
+      background: #52525b;
+      border-radius: 8px;
+    }
   </style>
 </head>
-<body class="bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 min-h-screen transition-colors duration-200">
+<body class="bg-bgDark text-textBright min-h-screen flex flex-col">
   
-  <div class="max-w-4xl mx-auto px-4 py-12">
+  <div class="flex-grow max-w-5xl mx-auto px-4 py-16 w-full">
     
     <!-- Header -->
-    <header class="text-center mb-12">
-      <h1 class="text-4xl md:text-5xl font-extrabold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-purple-600 mb-4">
+    <header class="text-center mb-16">
+      <h1 class="text-5xl md:text-6xl font-bold tracking-tight text-brandYellow mb-4">
         Pastime
       </h1>
-      <p class="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
-        Generate a perfectly scaled GitHub Activity Graph theme with a single color. Supports both Light and Dark mode automatically.
+      <p class="text-lg text-textSoft max-w-2xl mx-auto">
+        Craft your perfect GitHub Activity Graph. Pick a single color and we'll automatically generate a beautifully scaled theme for both Light and Dark modes.
       </p>
     </header>
 
-    <main class="space-y-8">
+    <main class="space-y-10">
       
-      <!-- Color Picker Card -->
-      <section class="bg-white dark:bg-gray-800 rounded-2xl p-6 md:p-8 shadow-sm border border-gray-200 dark:border-gray-700">
-        <h2 class="text-xl font-semibold mb-4 text-center">Pick Your Brand Color</h2>
-        <div class="max-w-xs mx-auto">
-          <input type="color" id="primaryColor" value="#3b82f6" title="Choose a primary color" class="shadow-sm transition-transform hover:scale-105 active:scale-95">
-          <p class="text-center text-sm text-gray-500 dark:text-gray-400 mt-3">All intensity levels are calculated automatically.</p>
-        </div>
-      </section>
-
-      <!-- Live Preview Card -->
-      <section class="preview-container rounded-2xl p-6 shadow-sm border overflow-x-auto relative">
-        <div class="absolute top-4 left-4 text-xs font-medium text-gray-400 uppercase tracking-wider">Live Preview</div>
-        <div class="mt-6 flex justify-center min-w-[700px]">
-          <div id="svgContainer"></div>
-        </div>
-        <p class="text-center text-xs text-gray-400 mt-4">This preview automatically matches your system's light/dark mode setting.</p>
-      </section>
-
-      <!-- Code Export Card -->
-      <section class="bg-white dark:bg-gray-800 rounded-2xl p-6 md:p-8 shadow-sm border border-gray-200 dark:border-gray-700">
-        <div class="flex justify-between items-end mb-4">
-          <div>
-            <h2 class="text-xl font-semibold">GitHub Actions Configuration</h2>
-            <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Paste this into the <code>env</code> section of your <code>update-graph.yml</code> workflow.</p>
+      <!-- Color Picker Section -->
+      <section class="bg-cardDark rounded-3xl p-8 shadow-xl border border-zinc-800">
+        <div class="max-w-md mx-auto text-center">
+          <h2 class="text-xl font-medium mb-6 text-textBright">Choose Your Theme Color</h2>
+          <div class="relative group">
+            <input type="color" id="primaryColor" value="#fbbf24" title="Choose a primary color" class="shadow-inner transition-transform group-hover:scale-[1.02] active:scale-95 duration-200">
           </div>
-          <button id="copyBtn" class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-lg font-medium text-sm transition-colors shadow-sm active:scale-95 flex-shrink-0">
+          <p class="text-sm text-textSoft mt-4">We'll calculate 4 precise intensity levels for your heat map.</p>
+        </div>
+      </section>
+
+      <!-- Live Preview Section -->
+      <section class="bg-cardDark rounded-3xl p-8 shadow-xl border border-zinc-800 relative">
+        <div class="mb-6 flex justify-between items-center">
+          <h2 class="text-xl font-medium text-textBright">Live Preview</h2>
+          <span class="text-xs font-medium text-brandYellow bg-brandYellow/10 px-3 py-1 rounded-full border border-brandYellow/20">Auto-Theme Enabled</span>
+        </div>
+        
+        <!-- The actual preview window -->
+        <div class="preview-container rounded-2xl p-6 shadow-inner border overflow-x-auto custom-scroll relative">
+          <div class="flex justify-center min-w-[700px]">
+            <div id="svgContainer" class="transform scale-100 origin-left md:origin-center"></div>
+          </div>
+        </div>
+        <p class="text-center text-xs text-textSoft mt-5">This graph instantly reacts to your system's Dark/Light mode settings.</p>
+      </section>
+
+      <!-- Code Export Section -->
+      <section class="bg-cardDark rounded-3xl p-8 shadow-xl border border-zinc-800">
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-6 gap-4">
+          <div>
+            <h2 class="text-xl font-medium text-textBright">GitHub Actions Config</h2>
+            <p class="text-sm text-textSoft mt-2">Copy and paste this into the <code>env</code> section of your <code>update-graph.yml</code> workflow.</p>
+          </div>
+          <button id="copyBtn" class="bg-brandYellow hover:bg-yellow-300 text-bgDark px-6 py-3 rounded-xl font-semibold text-sm transition-all shadow-md active:scale-95 flex-shrink-0">
             Copy Code
           </button>
         </div>
         
-        <div class="bg-gray-900 rounded-xl p-4 overflow-x-auto border border-gray-700">
-          <pre class="text-blue-300 font-mono text-sm leading-relaxed"><code id="exportCode"></code></pre>
+        <div class="bg-bgDark rounded-2xl p-6 overflow-x-auto border border-zinc-800 shadow-inner">
+          <pre class="text-yellow-100 font-mono text-sm leading-relaxed"><code id="exportCode"></code></pre>
         </div>
       </section>
       
     </main>
     
-    <footer class="mt-16 text-center text-gray-500 dark:text-gray-400 text-sm">
-      <p>Powered by Pastime &bull; 100% Client-Side &bull; No API required</p>
-    </footer>
-
   </div>
+
+  <footer class="py-8 text-center text-textSoft text-sm border-t border-zinc-800 mt-auto bg-bgDark">
+    <p>&copy; 2026 Pastime Team. All rights reserved.</p>
+  </footer>
 
   <script src="script.js"></script>
 </body>

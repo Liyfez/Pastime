@@ -98,7 +98,8 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function render() {
-    const hex = colorPicker.value;
+    let hex = colorPicker.value;
+    if (!hex) hex = '#fbbf24'; // Default to yellow
     const { lightColors, darkColors } = generateColorScales(hex);
 
     let rects = '';
