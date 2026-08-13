@@ -26,9 +26,8 @@ jobs:
 
       - name: Generate Custom Activity Graph
         env:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN_FOR_GRAPH }}
           GITHUB_USERNAME: ${{ github.repository_owner }}
-          # You can override this directly here or via another secret if you prefer
+          # You can override this directly here or via a repository variable if you prefer
           COLOR_THEME: '#ebedf0,#9be9a8,#40c463,#30a14e,#216e39'
         run: npm start
 

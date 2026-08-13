@@ -14,9 +14,6 @@ export function generateSVG(weeks, colors) {
   svg += `    text { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; font-size: 10px; fill: #768390; }\n`;
   svg += `  </style>\n`;
 
-  // Draw background if you want (optional, commenting out to keep it transparent)
-  // svg += `  <rect width="100%" height="100%" fill="#ffffff" />\n`;
-
   svg += `  <g transform="translate(${padding}, ${padding})">\n`;
 
   weeks.forEach((week, weekIndex) => {
@@ -27,17 +24,10 @@ export function generateSVG(weeks, colors) {
       const dayOfWeek = new Date(day.date).getUTCDay();
       const y = dayOfWeek * (cellSize + cellGap);
 
-      // Determine color based on contribution count
-      // GitHub usually uses: 0, 1-3, 4-6, 7-9, 10+ (roughly)
-      // We will map contributionCount to 5 levels (0, 1, 2, 3, 4)
-      let level = 0;
-      if (day.contributionCount > 0) level = 1;
-      if (day.contributionCount > 3) level = 2;
-      if (day.contributionCount > 6) level = 3;
-      if (day.contributionCount > 10) level = 4;
-
+      // We use the level (0-4) extracted directly from GitHub's HTML!
+      const level = day.level;
       const fill = colors[level] || colors[0];
-      const title = `${day.contributionCount} contributions on ${day.date}`;
+      const title = `Level ${level} on ${day.date}`;
 
       svg += `    <rect class="day" x="${x}" y="${y}" width="${cellSize}" height="${cellSize}" fill="${fill}">\n`;
       svg += `      <title>${title}</title>\n`;
