@@ -1,0 +1,13 @@
+{
+  "name": "pastime",
+  "version": "1.0.0",
+  "description": "Customizable GitHub Activity Graph Generator",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "dotenv": "^16.3.1"
+  }
+}

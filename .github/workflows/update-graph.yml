@@ -1,0 +1,41 @@
+name: Update GitHub Activity Graph
+
+on:
+  schedule:
+    # Run at midnight every day
+    - cron: '0 0 * * *'
+  workflow_dispatch: # Allows manual trigger from Actions tab
+
+jobs:
+  generate-and-commit:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # Needed to commit back to the repo
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Generate Custom Activity Graph
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN_FOR_GRAPH }}
+          GITHUB_USERNAME: ${{ github.repository_owner }}
+          # You can override this directly here or via another secret if you prefer
+          COLOR_THEME: '#ebedf0,#9be9a8,#40c463,#30a14e,#216e39'
+        run: npm start
+
+      - name: Commit generated SVG
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add activity-graph.svg
+          # Only commit if there are changes
+          git diff --staged --quiet || (git commit -m "chore: update activity graph [skip ci]" && git push)
