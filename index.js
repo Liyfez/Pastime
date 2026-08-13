@@ -10,10 +10,13 @@ dotenv.config();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Token is no longer required for fetching data, but we'll use username from env.
 const GITHUB_USERNAME = process.env.GITHUB_USERNAME;
-const COLOR_THEME_STR = process.env.COLOR_THEME || '#ebedf0,#9be9a8,#40c463,#30a14e,#216e39';
-const COLORS = COLOR_THEME_STR.split(',').map(c => c.trim());
+
+const LIGHT_THEME_STR = process.env.LIGHT_THEME || '#ebedf0,#9be9a8,#40c463,#30a14e,#216e39';
+const DARK_THEME_STR = process.env.DARK_THEME || '#161b22,#0e4429,#006d32,#26a641,#39d353';
+
+const lightColors = LIGHT_THEME_STR.split(',').map(c => c.trim());
+const darkColors = DARK_THEME_STR.split(',').map(c => c.trim());
 
 async function fetchContributionsFromHTML(username) {
   const url = `https://github.com/users/${username}/contributions`;
@@ -26,11 +29,7 @@ async function fetchContributionsFromHTML(username) {
   const html = await response.text();
   const $ = cheerio.load(html);
 
-  // GitHub structure: td.ContributionCalendar-day with data-date, data-level, data-ix
-  // We'll organize days into weeks.
   const weeks = [];
-  // data-ix indicates the week column (0 to 52).
-  // So we can map by data-ix
   
   $('td.ContributionCalendar-day').each((i, el) => {
     const date = $(el).attr('data-date');
@@ -52,7 +51,6 @@ async function fetchContributionsFromHTML(username) {
     }
   });
   
-  // Clean up any undefined weeks if any
   return weeks.filter(Boolean);
 }
 
@@ -62,8 +60,8 @@ async function main() {
     process.exit(1);
   }
 
-  if (COLORS.length < 5) {
-    console.error('Error: COLOR_THEME must contain at least 5 comma-separated hex colors.');
+  if (lightColors.length < 5 || darkColors.length < 5) {
+    console.error('Error: LIGHT_THEME and DARK_THEME must contain at least 5 comma-separated hex colors.');
     process.exit(1);
   }
 
@@ -72,8 +70,8 @@ async function main() {
     const weeks = await fetchContributionsFromHTML(GITHUB_USERNAME);
     console.log(`Successfully fetched data for ${weeks.length} weeks.`);
 
-    console.log(`Generating SVG with custom colors...`);
-    const svg = generateSVG(weeks, COLORS);
+    console.log(`Generating adaptive SVG with custom themes...`);
+    const svg = generateSVG(weeks, lightColors, darkColors);
 
     const outputPath = path.join(__dirname, 'activity-graph.svg');
     fs.writeFileSync(outputPath, svg);
