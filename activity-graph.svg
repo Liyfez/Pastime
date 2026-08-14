@@ -1,18 +1,22 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 782 128" width="782" height="128">
+  <defs>
+    <linearGradient id="heatmap-grad" gradientUnits="userSpaceOnUse" x1="135.50477104454757" y1="78.11623285122045" x2="732.2474256355983" y2="52.930044179489606">
+      <stop offset="0%" stop-color="#ffde7a" />
+      <stop offset="31.19804147749513%" stop-color="#75ffe1" />
+      <stop offset="67.58126593345509%" stop-color="#8fbaff" />
+      <stop offset="100%" stop-color="#a0ff61" />
+    </linearGradient>
+  </defs>
   <style>
     .day { rx: 2; ry: 2; shape-rendering: geometricPrecision; }
     .label { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; font-size: 10px; fill: #768390; }
     .level-0 { fill: #ebedf0; }
-    .level-1 { fill: #f9a09f; }
-    .level-2 { fill: #f55956; }
-    .level-3 { fill: #f1120e; }
-    .level-4 { fill: #a90c0a; }
+    .level-1 { fill: url(#heatmap-grad); opacity: 0.3; }
+    .level-2 { fill: url(#heatmap-grad); opacity: 0.55; }
+    .level-3 { fill: url(#heatmap-grad); opacity: 0.8; }
+    .level-4 { fill: url(#heatmap-grad); opacity: 1.0; }
     @media (prefers-color-scheme: dark) {
       .level-0 { fill: #161b22; }
-      .level-1 { fill: #600706; }
-      .level-2 { fill: #a90c0a; }
-      .level-3 { fill: #f1120e; }
-      .level-4 { fill: #f55956; }
     }
   </style>
   <g transform="translate(30, 20)">
@@ -707,8 +711,8 @@
     <rect class="day level-4" x="448" y="56" width="10" height="10">
       <title>Level 4 on 2026-08-13</title>
     </rect>
-    <rect class="day level-0" x="448" y="70" width="10" height="10">
-      <title>Level 0 on 2026-08-14</title>
+    <rect class="day level-4" x="448" y="70" width="10" height="10">
+      <title>Level 4 on 2026-08-14</title>
     </rect>
     <rect class="day level-0" x="448" y="84" width="10" height="10">
       <title>Level 0 on 2026-08-15</title>
