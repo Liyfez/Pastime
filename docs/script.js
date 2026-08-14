@@ -203,43 +203,50 @@
 
     function renderGradientNodesUI() {
       if (!gradientOverlay) return;
-      gradientOverlay.innerHTML = '';
       
-      gradientStops.forEach((stop, index) => {
-        const thumb = document.createElement('div');
-        // Circular, highly styled thumb with pointer-events-auto
-        thumb.className = `absolute -translate-y-1/2 -translate-x-1/2 w-8 h-8 rounded-full border-[3px] border-white cursor-grab shadow-[0_2px_10px_rgba(0,0,0,0.5)] z-20 transition-transform hover:scale-110 active:cursor-grabbing flex items-center justify-center pointer-events-auto`;
-        
-        // Highlight active thumb with a yellow ring
-        if (index === activeNodeIndex) {
-          thumb.classList.add('border-brandYellow', 'scale-110', 'z-30');
-          thumb.classList.remove('border-white');
-        }
+      // Initialize if empty or node count changed
+      if (gradientOverlay.children.length !== gradientStops.length) {
+        gradientOverlay.innerHTML = '';
+        gradientStops.forEach((stop, index) => {
+          const thumb = document.createElement('div');
+          thumb.className = `absolute -translate-y-1/2 -translate-x-1/2 w-8 h-8 rounded-full border-[3px] cursor-grab shadow-[0_2px_10px_rgba(0,0,0,0.5)] transition-transform hover:scale-110 active:cursor-grabbing flex items-center justify-center pointer-events-auto`;
+          
+          thumb.addEventListener('mousedown', (e) => {
+            e.preventDefault();
+            activeNodeIndex = index;
+            isDragging = true;
+            draggedNodeIndex = index;
+            updateNodeEditor();
+            renderGradientNodesUI();
+          });
 
+          thumb.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            activeNodeIndex = index;
+            isDragging = true;
+            draggedNodeIndex = index;
+            updateNodeEditor();
+            renderGradientNodesUI();
+          }, {passive: false});
+
+          gradientOverlay.appendChild(thumb);
+        });
+      }
+
+      // Update positions and styles for existing thumbs
+      Array.from(gradientOverlay.children).forEach((thumb, index) => {
+        const stop = gradientStops[index];
         thumb.style.left = `${stop.x}%`;
         thumb.style.top = `${stop.y}%`;
         thumb.style.backgroundColor = stop.color;
 
-        // Mouse Events
-        thumb.addEventListener('mousedown', (e) => {
-          e.preventDefault(); // Prevent text selection
-          activeNodeIndex = index;
-          isDragging = true;
-          draggedNodeIndex = index;
-          updateNodeEditor();
-          renderGradientNodesUI();
-        });
-
-        // Touch Events
-        thumb.addEventListener('touchstart', (e) => {
-          activeNodeIndex = index;
-          isDragging = true;
-          draggedNodeIndex = index;
-          updateNodeEditor();
-          renderGradientNodesUI();
-        }, {passive: true});
-
-        gradientOverlay.appendChild(thumb);
+        if (index === activeNodeIndex) {
+          thumb.classList.add('border-brandYellow', 'scale-110', 'z-30');
+          thumb.classList.remove('border-white', 'z-20');
+        } else {
+          thumb.classList.remove('border-brandYellow', 'scale-110', 'z-30');
+          thumb.classList.add('border-white', 'z-20');
+        }
       });
     }
 
