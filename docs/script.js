@@ -100,7 +100,7 @@
     const gradDirection = document.getElementById('gradDirection');
     
     // Gradient Slider UI Elements
-    const gradientTrack = document.getElementById('gradientTrack');
+    const gradientOverlay = document.getElementById('gradientOverlay');
     const addGradientNodeBtn = document.getElementById('addGradientNodeBtn');
     const activeNodeColor = document.getElementById('activeNodeColor');
     const removeNodeBtn = document.getElementById('removeNodeBtn');
@@ -108,10 +108,10 @@
 
     let currentMode = 'solid'; // 'solid' or 'gradient'
     
-    // Gradient state (Starts with 2 nodes)
+    // Gradient state (Starts with 2 nodes in 2D space)
     let gradientStops = [
-      { color: '#fbbf24', offset: 0 },
-      { color: '#34d399', offset: 100 }
+      { color: '#fbbf24', x: 0, y: 50 },
+      { color: '#34d399', x: 100, y: 50 }
     ];
     let activeNodeIndex = 0;
     let isDragging = false;
@@ -130,31 +130,94 @@
     const width = 53 * (cellSize + cellGap) + paddingX + 10;
     const height = 7 * (cellSize + cellGap) + paddingY + 10;
 
-    // ----- Drag and Drop Gradient Slider Logic -----
+    // ----- 2D Gradient Math Engine (PCA) -----
+    function getGradientMath(stops) {
+      if (stops.length < 2) return { angle: 90, x1:0, y1:0, x2:100, y2:0, projectedStops: [{color: stops[0].color, offset: 50}] };
 
-    function updateTrackBackground() {
-      // Sort a copy of stops for the CSS background rendering
-      const sorted = [...gradientStops].sort((a, b) => a.offset - b.offset);
-      const stopsCSS = sorted.map(s => `${s.color} ${s.offset}%`).join(', ');
-      gradientTrack.style.background = `linear-gradient(to right, ${stopsCSS})`;
+      let sumX = 0, sumY = 0;
+      stops.forEach(s => { sumX += s.x; sumY += s.y; });
+      const cx = sumX / stops.length;
+      const cy = sumY / stops.length;
+
+      let vxx = 0, vyy = 0, vxy = 0;
+      stops.forEach(s => {
+        const dx = s.x - cx;
+        const dy = s.y - cy;
+        vxx += dx * dx;
+        vyy += dy * dy;
+        vxy += dx * dy;
+      });
+
+      let dx, dy;
+      if (vxy === 0 && vxx === vyy) {
+        dx = 1; dy = 0;
+      } else {
+        const trace = vxx + vyy;
+        const det = vxx * vyy - vxy * vxy;
+        const lambda1 = (trace + Math.sqrt(trace * trace - 4 * det)) / 2;
+        dx = lambda1 - vyy;
+        dy = vxy;
+        if (dx === 0 && dy === 0) {
+          dx = vxy; dy = lambda1 - vxx;
+        }
+      }
+
+      let len = Math.sqrt(dx*dx + dy*dy);
+      if (len === 0) { dx = 1; dy = 0; len = 1; }
+      dx /= len; dy /= len;
+
+      let projections = stops.map(s => ({
+        color: s.color,
+        t: (s.x - cx) * dx + (s.y - cy) * dy
+      }));
+
+      projections.sort((a, b) => a.t - b.t);
+
+      const minT = projections[0].t;
+      const maxT = projections[projections.length - 1].t;
+      const rangeT = maxT - minT;
+
+      const projectedStops = projections.map(p => ({
+        color: p.color,
+        offset: rangeT === 0 ? 50 : ((p.t - minT) / rangeT) * 100
+      }));
+
+      // In CSS: 0deg is bottom-to-top, 90deg is left-to-right
+      let mathAngle = Math.atan2(dy, dx) * 180 / Math.PI;
+      let cssAngle = mathAngle + 90;
+
+      const pStart = { x: cx + dx * minT, y: cy + dy * minT };
+      const pEnd = { x: cx + dx * maxT, y: cy + dy * maxT };
+
+      return {
+        angle: cssAngle,
+        x1: pStart.x,
+        y1: pStart.y,
+        x2: pEnd.x,
+        y2: pEnd.y,
+        projectedStops
+      };
     }
 
+    // ----- Drag and Drop Gradient Canvas Logic -----
+
     function renderGradientNodesUI() {
-      gradientTrack.innerHTML = '';
+      if (!gradientOverlay) return;
+      gradientOverlay.innerHTML = '';
       
       gradientStops.forEach((stop, index) => {
         const thumb = document.createElement('div');
-        // Circular, highly styled thumb
-        thumb.className = `absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-7 h-7 rounded-full border-[3px] cursor-grab shadow-lg z-10 transition-all hover:scale-110 active:cursor-grabbing flex items-center justify-center`;
+        // Circular, highly styled thumb with pointer-events-auto
+        thumb.className = `absolute -translate-y-1/2 -translate-x-1/2 w-8 h-8 rounded-full border-[3px] border-white cursor-grab shadow-[0_2px_10px_rgba(0,0,0,0.5)] z-20 transition-transform hover:scale-110 active:cursor-grabbing flex items-center justify-center pointer-events-auto`;
         
         // Highlight active thumb with a yellow ring
         if (index === activeNodeIndex) {
-          thumb.classList.add('border-brandYellow', 'scale-110', 'z-20');
-        } else {
-          thumb.classList.add('border-white', 'z-10');
+          thumb.classList.add('border-brandYellow', 'scale-110', 'z-30');
+          thumb.classList.remove('border-white');
         }
 
-        thumb.style.left = `${stop.offset}%`;
+        thumb.style.left = `${stop.x}%`;
+        thumb.style.top = `${stop.y}%`;
         thumb.style.backgroundColor = stop.color;
 
         // Mouse Events
@@ -163,8 +226,6 @@
           activeNodeIndex = index;
           isDragging = true;
           draggedNodeIndex = index;
-          thumb.classList.add('cursor-grabbing');
-          thumb.classList.remove('cursor-grab');
           updateNodeEditor();
           renderGradientNodesUI();
         });
@@ -178,10 +239,8 @@
           renderGradientNodesUI();
         }, {passive: true});
 
-        gradientTrack.appendChild(thumb);
+        gradientOverlay.appendChild(thumb);
       });
-
-      updateTrackBackground();
     }
 
     function updateNodeEditor() {
@@ -212,24 +271,27 @@
     }
 
     // Handle Dragging anywhere on document
-    function handleMove(clientX) {
-      if (!isDragging || draggedNodeIndex === -1) return;
+    function handleMove(clientX, clientY) {
+      if (!isDragging || draggedNodeIndex === -1 || !gradientOverlay) return;
 
-      const trackRect = gradientTrack.getBoundingClientRect();
-      let newOffset = ((clientX - trackRect.left) / trackRect.width) * 100;
+      const trackRect = gradientOverlay.getBoundingClientRect();
+      let newX = ((clientX - trackRect.left) / trackRect.width) * 100;
+      let newY = ((clientY - trackRect.top) / trackRect.height) * 100;
       
       // Clamp between 0 and 100
-      newOffset = Math.max(0, Math.min(100, newOffset));
+      newX = Math.max(0, Math.min(100, newX));
+      newY = Math.max(0, Math.min(100, newY));
       
-      gradientStops[draggedNodeIndex].offset = Math.round(newOffset);
+      gradientStops[draggedNodeIndex].x = Math.round(newX);
+      gradientStops[draggedNodeIndex].y = Math.round(newY);
       renderGradientNodesUI();
       renderAll();
     }
 
-    document.addEventListener('mousemove', (e) => handleMove(e.clientX));
+    document.addEventListener('mousemove', (e) => handleMove(e.clientX, e.clientY));
     document.addEventListener('touchmove', (e) => {
       if(isDragging && e.touches.length > 0) {
-        handleMove(e.touches[0].clientX);
+        handleMove(e.touches[0].clientX, e.touches[0].clientY);
       }
     }, {passive: true});
 
@@ -261,9 +323,9 @@
 
     addGradientNodeBtn.addEventListener('click', () => {
       if (gradientStops.length < 4) {
-        // Add a node exactly in the middle (50%)
-        gradientStops.push({ color: '#3b82f6', offset: 50 });
-        activeNodeIndex = gradientStops.length - 1; // Select the new node
+        // Add a node exactly in the middle
+        gradientStops.push({ color: '#3b82f6', x: 50, y: 50 });
+        activeNodeIndex = gradientStops.length - 1;
         updateNodeEditor();
         renderGradientNodesUI();
         renderAll();
@@ -285,6 +347,7 @@
 
         solidControls.classList.remove('hidden');
         gradientControls.classList.add('hidden');
+        if (gradientOverlay) gradientOverlay.classList.add('hidden');
       } else {
         modeGradientBtn.classList.replace('bg-zinc-800', 'bg-brandYellow');
         modeGradientBtn.classList.replace('text-textSoft', 'text-bgDark');
@@ -296,6 +359,7 @@
 
         gradientControls.classList.remove('hidden');
         solidControls.classList.add('hidden');
+        if (gradientOverlay) gradientOverlay.classList.remove('hidden');
         
         updateNodeEditor();
         renderGradientNodesUI();

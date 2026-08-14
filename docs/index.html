@@ -163,10 +163,8 @@
               </button>
             </div>
 
-            <!-- Interactive Slider Track -->
-            <div class="relative w-full h-14 rounded-2xl border-2 border-zinc-700 shadow-[inset_0_2px_8px_rgba(0,0,0,0.5)] mb-8" id="gradientTrack">
-              <!-- Thumbs injected by JS -->
-            </div>
+            <!-- The Interactive Track is now directly over the Live Preview! -->
+
 
             <!-- Editor & Direction Container -->
             <div class="grid md:grid-cols-2 gap-6">
@@ -206,7 +204,15 @@
         
         <figure class="preview-container rounded-3xl p-8 bg-[#0d1117] shadow-[inset_0_4px_20px_rgba(0,0,0,0.5)] border border-zinc-800 overflow-x-auto custom-scroll relative">
           <div class="flex justify-start md:justify-center w-full">
-            <div id="svgContainer" class="transform scale-100 origin-left md:origin-center drop-shadow-lg" aria-label="Live preview of the generated GitHub graph"></div>
+            <div class="relative inline-block">
+              <!-- SVG Graph Container -->
+              <div id="svgContainer" class="transform scale-100 origin-left md:origin-center drop-shadow-lg" aria-label="Live preview of the generated GitHub graph"></div>
+              
+              <!-- Gradient Interaction Overlay -->
+              <div id="gradientOverlay" class="absolute inset-0 z-10 pointer-events-none hidden">
+                <!-- Thumbs injected here by JS, they will have pointer-events-auto -->
+              </div>
+            </div>
           </div>
         </figure>
         <p class="text-center text-xs text-textSoft mt-6 font-medium tracking-wide">Graph mathematically adapts to dark/light environments.</p>
