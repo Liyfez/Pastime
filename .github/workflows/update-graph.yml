@@ -26,7 +26,7 @@ jobs:
 
       - name: Generate Custom Activity Graph
         env:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN_FOR_GRAPH }}
+           GITHUB_TOKEN: ${{ secrets.GH_TOKEN_FOR_GRAPH }}
           GITHUB_USERNAME: ${{ github.repository_owner }}
           THEME_MODE: 'gradient'
           GRADIENT_STOPS: '#ffde7a@0%,#75ffe1@31.19804147749513%,#8fbaff@67.58126593345509%,#a0ff61@100%'
