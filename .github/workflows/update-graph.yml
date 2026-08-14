@@ -28,9 +28,14 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN_FOR_GRAPH }}
           GITHUB_USERNAME: ${{ github.repository_owner }}
-          LIGHT_THEME: '#ebedf0,#f9a09f,#f55956,#f1120e,#a90c0a'
-          DARK_THEME: '#161b22,#600706,#a90c0a,#f1120e,#f55956'
-        run: npm start
+          THEME_MODE: 'gradient'
+          GRADIENT_STOPS: '#ffde7a@0%,#75ffe1@31.19804147749513%,#8fbaff@67.58126593345509%,#a0ff61@100%'
+          GRADIENT_X1: '17.327975836898666'
+          GRADIENT_Y1: '61.02830691501597'
+          GRADIENT_X2: '93.6377782142709'
+          GRADIENT_Y2: '41.351597015226254'
+          BG_EMPTY_LIGHT: '#ebedf0'
+          BG_EMPTY_DARK: '#161b22'
 
       - name: Commit generated SVG
         run: |
