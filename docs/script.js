@@ -152,30 +152,34 @@
     // Single global binding flag for window mouse events
     let isEditorBound = false;
 
-    function renderAll() {
-      const fakeWeeks = Array.from({ length: 53 }, (_, wIndex) => ({
-        contributionDays: Array.from({ length: 7 }, (_, dIndex) => {
-          let level = Math.floor(Math.random() * 5);
-          if (wIndex < 5 && dIndex < 3) level = 0; // Empty corner
-          return { level, date: `2026-01-01` };
-        })
-      }));
+    // Generate static activity graph once
+    const fakeWeeks = Array.from({ length: 53 }, (_, wIndex) => ({
+      contributionDays: Array.from({ length: 7 }, (_, dIndex) => {
+        let level = Math.floor(Math.sin(wIndex * 0.3 + dIndex * 0.5) * 2.5 + 2.5);
+        if (level > 4) level = 4;
+        if (level < 0) level = 0;
+        if (wIndex < 5 && dIndex < 3) level = 0; // Empty corner
+        return { level, date: `2026-01-01` };
+      })
+    }));
 
-      const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-      let monthLabels = '';
-      let rects = '';
-      
-      for (let i = 0; i < 12; i++) {
-        monthLabels += `<text class="label" x="${i * 50}" y="-8">${months[i]}</text>\n`;
-      }
+    const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    let monthLabels = '';
+    let rects = '';
+    
+    for (let i = 0; i < 12; i++) {
+      monthLabels += `<text class="label" x="${i * 50}" y="-8">${months[i]}</text>\n`;
+    }
 
-      fakeWeeks.forEach((week, w) => {
-        const x = w * (cellSize + cellGap);
-        week.contributionDays.forEach((day, d) => {
-          const y = d * (cellSize + cellGap);
-          rects += `<rect class="day level-${day.level}" x="${x}" y="${y}" width="${cellSize}" height="${cellSize}"></rect>\n`;
-        });
+    fakeWeeks.forEach((week, w) => {
+      const x = w * (cellSize + cellGap);
+      week.contributionDays.forEach((day, d) => {
+        const y = d * (cellSize + cellGap);
+        rects += `<rect class="day level-${day.level}" x="${x}" y="${y}" width="${cellSize}" height="${cellSize}"></rect>\n`;
       });
+    });
+
+    function renderAll() {
 
       const dayLabels = `
         <text class="label" x="-25" y="${1 * (cellSize + cellGap) + 9}">Mon</text>
@@ -257,8 +261,14 @@
         svgHTML += `
           <svg id="interactiveOverlay" style="position:absolute; top:0; left:0; width:100%; height:100%; z-index:10; pointer-events:none;" viewBox="0 0 100 100" preserveAspectRatio="none">
             <line id="editorLine" x1="${gradX1}" y1="${gradY1}" x2="${gradX2}" y2="${gradY2}" stroke="rgba(255,255,255,0.5)" stroke-width="0.5" stroke-dasharray="2,1" />
-            <circle id="node1" cx="${gradX1}" cy="${gradY1}" r="3" fill="${startColor}" stroke="#fff" stroke-width="0.5" style="pointer-events:all; cursor:grab;" />
-            <circle id="node2" cx="${gradX2}" cy="${gradY2}" r="3" fill="${endColor}" stroke="#fff" stroke-width="0.5" style="pointer-events:all; cursor:grab;" />
+            
+            <!-- Visible Nodes (No pointer events) -->
+            <circle id="visNode1" cx="${gradX1}" cy="${gradY1}" r="3" fill="${startColor}" stroke="#fff" stroke-width="0.5" style="pointer-events:none;" />
+            <circle id="visNode2" cx="${gradX2}" cy="${gradY2}" r="3" fill="${endColor}" stroke="#fff" stroke-width="0.5" style="pointer-events:none;" />
+            
+            <!-- Invisible hit areas for grabbing (Much larger) -->
+            <circle id="node1" cx="${gradX1}" cy="${gradY1}" r="15" fill="transparent" style="pointer-events:all; cursor:grab;" />
+            <circle id="node2" cx="${gradX2}" cy="${gradY2}" r="15" fill="transparent" style="pointer-events:all; cursor:grab;" />
           </svg>
         `;
       }
@@ -316,9 +326,13 @@
           gradY2 = y;
         }
         
-        // Fast UI update
+        // Fast UI update for both hit areas and visual nodes
         document.getElementById(draggingNode).setAttribute('cx', x);
         document.getElementById(draggingNode).setAttribute('cy', y);
+        
+        const visId = 'vis' + draggingNode.charAt(0).toUpperCase() + draggingNode.slice(1);
+        document.getElementById(visId).setAttribute('cx', x);
+        document.getElementById(visId).setAttribute('cy', y);
         
         const line = document.getElementById('editorLine');
         if (draggingNode === 'node1') {
