@@ -128,86 +128,88 @@
       <!-- Color Picker Section -->
       <section class="bg-cardDark rounded-3xl p-8 shadow-xl border border-zinc-800" aria-labelledby="step1-title">
         <div class="max-w-2xl mx-auto text-center">
-          <h2 id="step1-title" class="text-xl font-medium mb-6 text-textBright"><span class="text-brandYellow font-bold">Step 1:</span> Design Your Theme</h2>
+          <h2 id="step1-title" class="text-xl font-medium mb-6 text-textBright"><span class="text-brandYellow font-bold">Step 1:</span> Choose Your Mode</h2>
           
-          <!-- Theme Mode Toggles (2 Tabs) -->
-          <div class="flex justify-center gap-2 mb-8 flex-wrap">
-            <button id="modeSolidBtn" class="px-5 py-2 rounded-full font-medium transition-all bg-brandYellow text-bgDark focus:outline-none focus:ring-2 focus:ring-brandYellow focus:ring-offset-2 focus:ring-offset-cardDark" aria-pressed="true">Solid Theme</button>
-            <button id="modeGradientBtn" class="px-5 py-2 rounded-full font-medium transition-all bg-zinc-800 text-textSoft hover:text-textBright border border-zinc-700 focus:outline-none focus:ring-2 focus:ring-brandYellow focus:ring-offset-2 focus:ring-offset-cardDark" aria-pressed="false">Gradient Theme</button>
-          </div>
-
-          <!-- Solid Mode Controls -->
-          <div id="solidControls" class="transition-opacity duration-300">
-            <label for="primaryColor" class="sr-only">Choose a primary theme color</label>
-            <input type="color" id="primaryColor" name="primaryColor" value="#fbbf24" class="max-w-md mx-auto shadow-inner transition-transform hover:scale-[1.02] active:scale-95 duration-200 focus:outline-none focus:ring-2 focus:ring-brandYellow focus:ring-offset-2 focus:ring-offset-bgDark">
-            <p class="text-sm text-textSoft mt-4">We'll calculate 4 precise intensity levels for your heat map.</p>
-          </div>
-
-          <!-- Gradient Mode Controls -->
-          <div id="gradientControls" class="hidden transition-opacity duration-300">
-            
-            <div class="mb-8">
-              <div class="flex justify-between items-end mb-3">
-                <label class="block text-sm font-semibold text-textBright">Interactive Gradient Editor</label>
-                <button id="addGradientNodeBtn" class="text-xs font-semibold bg-zinc-800 hover:bg-zinc-700 text-brandYellow px-4 py-2 rounded-xl border border-zinc-700 transition-all shadow-sm active:scale-95 flex items-center gap-2 focus:outline-none focus:ring-2 focus:ring-brandYellow focus:ring-offset-1 focus:ring-offset-bgDark" aria-label="Add new gradient node">
-                  <span>+ Add Node</span>
-                </button>
-              </div>
-
-              <!-- Interactive Slider Track -->
-              <div class="relative w-full h-12 rounded-2xl border border-zinc-700 shadow-inner mb-6" id="gradientTrack">
-                <!-- Thumbs injected by JS -->
-              </div>
-
-              <!-- Selected Node Editor Panel -->
-              <div id="nodeEditor" class="flex flex-col md:flex-row items-center gap-4 bg-bgDark p-5 rounded-2xl border border-zinc-800 shadow-inner min-h-[88px] transition-opacity duration-200">
-                <div class="flex-grow flex items-center gap-5 w-full">
-                  <div class="relative w-14 h-14 shrink-0 rounded-xl overflow-hidden border border-zinc-600 shadow-sm focus-within:ring-2 focus-within:ring-brandYellow">
-                    <label for="activeNodeColor" class="sr-only">Selected Node Color</label>
-                    <input type="color" id="activeNodeColor" class="absolute inset-0 w-[200%] h-[200%] -top-1/2 -left-1/2 cursor-pointer bg-transparent border-none p-0 outline-none">
-                  </div>
-                  <div class="text-left">
-                    <div class="text-sm font-semibold text-textBright">Selected Node Color</div>
-                    <div class="text-xs text-textSoft mt-0.5">Drag the thumb on the track above to change position</div>
-                  </div>
-                </div>
-                <button id="removeNodeBtn" class="w-full md:w-auto text-sm font-semibold text-red-400 hover:text-red-300 bg-red-400/10 hover:bg-red-400/20 px-5 py-2.5 rounded-xl transition-all border border-red-500/20 active:scale-95 flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-red-400" aria-label="Delete selected node">
-                  Delete Node
-                </button>
-              </div>
-            </div>
-            
-            <div class="mt-6">
-              <label for="gradDirection" class="block text-sm font-semibold text-textBright mb-3 text-left">Gradient Direction</label>
-              <div class="relative">
-                <select id="gradDirection" class="appearance-none w-full bg-bgDark border border-zinc-700 text-textBright rounded-xl px-5 py-3.5 focus:outline-none focus:ring-2 focus:ring-brandYellow focus:border-brandYellow transition-colors shadow-sm font-medium">
-                  <option value="left-to-right">Left to Right</option>
-                  <option value="top-to-bottom">Top to Bottom</option>
-                  <option value="top-left-to-bottom-right">Top-Left to Bottom-Right</option>
-                  <option value="bottom-left-to-top-right">Bottom-Left to Top-Right</option>
-                </select>
-                <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-textSoft">
-                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
-                </div>
-              </div>
-            </div>
+          <!-- Theme Mode Toggle -->
+          <div class="flex justify-center gap-4">
+            <button id="modeSolidBtn" class="px-6 py-2 rounded-full font-medium transition-all bg-brandYellow text-bgDark focus:outline-none focus:ring-2 focus:ring-brandYellow focus:ring-offset-2 focus:ring-offset-cardDark" aria-pressed="true">Solid Theme</button>
+            <button id="modeGradientBtn" class="px-6 py-2 rounded-full font-medium transition-all bg-zinc-800 text-textSoft hover:text-textBright border border-zinc-700 focus:outline-none focus:ring-2 focus:ring-brandYellow focus:ring-offset-2 focus:ring-offset-cardDark" aria-pressed="false">Gradient Theme</button>
           </div>
         </div>
       </section>
 
       <!-- Live Preview Section -->
       <section class="bg-cardDark rounded-3xl p-8 shadow-xl border border-zinc-800 relative" aria-labelledby="preview-title">
-        <header class="mb-6 flex justify-between items-center">
-          <h2 id="preview-title" class="text-xl font-medium text-textBright">Live Preview</h2>
+        <header class="mb-8 flex justify-between items-center border-b border-zinc-800 pb-4">
+          <h2 id="preview-title" class="text-xl font-medium text-textBright">Interactive Studio</h2>
           <span class="text-xs font-medium text-brandYellow bg-brandYellow/10 px-3 py-1 rounded-full border border-brandYellow/20">Auto-Theme Enabled</span>
         </header>
+
+        <!-- Solid Mode Controls -->
+        <div id="solidControls" class="transition-opacity duration-300 mb-8 text-center">
+          <label for="primaryColor" class="sr-only">Choose a primary theme color</label>
+          <input type="color" id="primaryColor" name="primaryColor" value="#fbbf24" class="max-w-xs mx-auto shadow-inner transition-transform hover:scale-[1.02] active:scale-95 duration-200 focus:outline-none focus:ring-2 focus:ring-brandYellow focus:ring-offset-2 focus:ring-offset-bgDark">
+          <p class="text-sm text-textSoft mt-4">We'll calculate 4 precise intensity levels based on this base color.</p>
+        </div>
+
+        <!-- Gradient Mode Controls -->
+        <div id="gradientControls" class="hidden transition-opacity duration-300 mb-8">
+          
+          <div class="mb-8 max-w-4xl mx-auto">
+            <div class="flex justify-between items-end mb-4">
+              <label class="block text-sm font-semibold text-brandYellow tracking-wide uppercase">Gradient Timeline Track</label>
+              <button id="addGradientNodeBtn" class="text-xs font-bold bg-brandYellow hover:bg-yellow-400 text-bgDark px-4 py-2 rounded-xl transition-all shadow-md active:scale-95 flex items-center gap-2 focus:outline-none focus:ring-2 focus:ring-brandYellow focus:ring-offset-1 focus:ring-offset-bgDark" aria-label="Add new gradient node">
+                <span>+ Add Node</span>
+              </button>
+            </div>
+
+            <!-- Interactive Slider Track -->
+            <div class="relative w-full h-14 rounded-2xl border-2 border-zinc-700 shadow-[inset_0_2px_8px_rgba(0,0,0,0.5)] mb-8" id="gradientTrack">
+              <!-- Thumbs injected by JS -->
+            </div>
+
+            <!-- Editor & Direction Container -->
+            <div class="grid md:grid-cols-2 gap-6">
+              <!-- Selected Node Editor Panel -->
+              <div id="nodeEditor" class="flex flex-col sm:flex-row items-center justify-between gap-4 bg-bgDark p-4 rounded-2xl border border-zinc-800 shadow-inner transition-opacity duration-200">
+                <div class="flex items-center gap-4">
+                  <div class="relative w-12 h-12 shrink-0 rounded-xl overflow-hidden border border-zinc-600 shadow-sm focus-within:ring-2 focus-within:ring-brandYellow">
+                    <input type="color" id="activeNodeColor" aria-label="Edit Selected Node Color" class="absolute inset-0 w-[200%] h-[200%] -top-1/2 -left-1/2 cursor-pointer bg-transparent border-none p-0 outline-none">
+                  </div>
+                  <div class="text-left">
+                    <div class="text-sm font-semibold text-textBright">Active Color</div>
+                    <div class="text-xs text-textSoft mt-0.5">Edit hex or drag thumb to move</div>
+                  </div>
+                </div>
+                <button id="removeNodeBtn" class="w-full sm:w-auto text-xs font-semibold text-red-400 hover:text-white bg-red-400/10 hover:bg-red-500 px-4 py-2.5 rounded-xl transition-all border border-red-500/20 active:scale-95 focus:outline-none focus:ring-2 focus:ring-red-400" aria-label="Delete selected node">
+                  Delete
+                </button>
+              </div>
+              
+              <!-- Gradient Direction -->
+              <div>
+                <div class="relative h-full">
+                  <select id="gradDirection" aria-label="Gradient Direction" class="appearance-none w-full h-full bg-bgDark border border-zinc-800 text-textBright rounded-2xl px-5 py-4 focus:outline-none focus:ring-2 focus:ring-brandYellow focus:border-brandYellow transition-colors shadow-inner font-medium cursor-pointer">
+                    <option value="left-to-right">Vector: Left to Right</option>
+                    <option value="top-to-bottom">Vector: Top to Bottom</option>
+                    <option value="top-left-to-bottom-right">Vector: Top-Left to Bottom-Right</option>
+                    <option value="bottom-left-to-top-right">Vector: Bottom-Left to Top-Right</option>
+                  </select>
+                  <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-brandYellow">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
         
-        <figure class="preview-container rounded-2xl p-6 shadow-inner border overflow-x-auto custom-scroll relative">
+        <figure class="preview-container rounded-3xl p-8 bg-[#0d1117] shadow-[inset_0_4px_20px_rgba(0,0,0,0.5)] border border-zinc-800 overflow-x-auto custom-scroll relative">
           <div class="flex justify-start md:justify-center w-full">
-            <div id="svgContainer" class="transform scale-100 origin-left md:origin-center" aria-label="Live preview of the generated GitHub graph"></div>
+            <div id="svgContainer" class="transform scale-100 origin-left md:origin-center drop-shadow-lg" aria-label="Live preview of the generated GitHub graph"></div>
           </div>
         </figure>
-        <p class="text-center text-xs text-textSoft mt-5">This graph instantly reacts to your system's Dark/Light mode settings.</p>
+        <p class="text-center text-xs text-textSoft mt-6 font-medium tracking-wide">Graph mathematically adapts to dark/light environments.</p>
       </section>
 
       <!-- Step 2: GitHub Actions Export Section -->
