@@ -51,18 +51,37 @@ export function generateSVG(weeks, lightColors, darkColors, themeConfig = {}) {
   
   // Define gradients if in gradient mode
   if (themeConfig.mode === 'gradient') {
-    let x1 = themeConfig.x1 || '0%';
-    let y1 = themeConfig.y1 || '0%';
-    let x2 = themeConfig.x2 || '100%';
-    let y2 = themeConfig.y2 || '100%';
+    // Parse stops string: "#ff0000@0%,#00ff00@100%"
+    let parsedStops = [];
+    if (themeConfig.stops) {
+      themeConfig.stops.split(',').forEach(s => {
+        const parts = s.split('@');
+        if (parts.length === 2) parsedStops.push({ color: parts[0].trim(), offset: parts[1].trim() });
+      });
+    }
+    // Fallback
+    if (parsedStops.length === 0) {
+      parsedStops = [
+        { color: '#fbbf24', offset: '0%' },
+        { color: '#34d399', offset: '100%' }
+      ];
+    }
+    
+    let x1 = '0%', y1 = '0%', x2 = '100%', y2 = '100%';
+    
+    // Parse direction
+    switch (themeConfig.dir) {
+      case 'left-to-right': x2 = '100%'; y2 = '0%'; break;
+      case 'top-to-bottom': x2 = '0%'; y2 = '100%'; break;
+      case 'top-left-to-bottom-right': x2 = '100%'; y2 = '100%'; break;
+      case 'bottom-left-to-top-right': y1 = '100%'; x2 = '100%'; y2 = '0%'; break;
+    }
 
     svg += `  <defs>\n`;
     svg += `    <linearGradient id="heatmap-grad" gradientUnits="userSpaceOnUse" x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}">\n`;
-    
-    const start = themeConfig.start || '#fbbf24';
-    const end = themeConfig.end || '#34d399';
-    svg += `      <stop offset="0%" stop-color="${start}" />\n`;
-    svg += `      <stop offset="100%" stop-color="${end}" />\n`;
+    parsedStops.forEach((stop) => {
+      svg += `      <stop offset="${stop.offset}" stop-color="${stop.color}" />\n`;
+    });
     svg += `    </linearGradient>\n`;
     svg += `  </defs>\n`;
   }

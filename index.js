@@ -127,13 +127,8 @@ async function main() {
 
   const themeConfig = {
     mode: process.env.THEME_MODE || 'solid',
-    start: process.env.GRADIENT_START,
-    end: process.env.GRADIENT_END,
+    stops: process.env.GRADIENT_STOPS || '', // Format: "#ff0000@0%,#00ff00@100%"
     dir: process.env.GRADIENT_DIR,
-    x1: process.env.GRADIENT_X1,
-    y1: process.env.GRADIENT_Y1,
-    x2: process.env.GRADIENT_X2,
-    y2: process.env.GRADIENT_Y2,
     lightBg: process.env.BG_EMPTY_LIGHT,
     darkBg: process.env.BG_EMPTY_DARK
   };
