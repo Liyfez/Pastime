@@ -130,7 +130,6 @@ async function main() {
     start: process.env.GRADIENT_START,
     end: process.env.GRADIENT_END,
     dir: process.env.GRADIENT_DIR,
-    stops: process.env.GRADIENT_STOPS, // e.g. '#ff0000:0%,#00ff00:100%'
     x1: process.env.GRADIENT_X1,
     y1: process.env.GRADIENT_Y1,
     x2: process.env.GRADIENT_X2,

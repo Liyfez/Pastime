@@ -1,72 +1,80 @@
-"use strict";
+(function() {
+  'use strict';
 
-(function () {
-  function hexToHSL(hex) {
+  function hexToHSL(H) {
     let r = 0, g = 0, b = 0;
-    if (hex.length === 4) {
-      r = parseInt(hex[1] + hex[1], 16);
-      g = parseInt(hex[2] + hex[2], 16);
-      b = parseInt(hex[3] + hex[3], 16);
-    } else if (hex.length === 7) {
-      r = parseInt(hex.substring(1, 3), 16);
-      g = parseInt(hex.substring(3, 5), 16);
-      b = parseInt(hex.substring(5, 7), 16);
+    if (H.length === 4) {
+      r = "0x" + H[1] + H[1];
+      g = "0x" + H[2] + H[2];
+      b = "0x" + H[3] + H[3];
+    } else if (H.length === 7) {
+      r = "0x" + H[1] + H[2];
+      g = "0x" + H[3] + H[4];
+      b = "0x" + H[5] + H[6];
     }
-    
-    r /= 255; 
-    g /= 255; 
-    b /= 255;
-    
-    const max = Math.max(r, g, b);
-    const min = Math.min(r, g, b);
-    let h = 0, s = 0;
-    const l = (max + min) / 2;
-    
-    if (max !== min) {
-      const d = max - min;
-      s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
-      switch (max) {
-        case r: h = (g - b) / d + (g < b ? 6 : 0); break;
-        case g: h = (b - r) / d + 2; break;
-        case b: h = (r - g) / d + 4; break;
-      }
-      h /= 6;
-    }
-    return { h: h * 360, s: s * 100, l: l * 100 };
+    r /= 255; g /= 255; b /= 255;
+    let cmin = Math.min(r,g,b),
+        cmax = Math.max(r,g,b),
+        delta = cmax - cmin,
+        h = 0, s = 0, l = 0;
+
+    if (delta === 0) h = 0;
+    else if (cmax === r) h = ((g - b) / delta) % 6;
+    else if (cmax === g) h = (b - r) / delta + 2;
+    else h = (r - g) / delta + 4;
+
+    h = Math.round(h * 60);
+    if (h < 0) h += 360;
+    l = (cmax + cmin) / 2;
+    s = delta === 0 ? 0 : delta / (1 - Math.abs(2 * l - 1));
+    s = +(s * 100).toFixed(1);
+    l = +(l * 100).toFixed(1);
+
+    return { h, s, l };
   }
 
   function hslToHex(h, s, l) {
+    s /= 100;
     l /= 100;
-    const a = s * Math.min(l, 1 - l) / 100;
-    const f = n => {
-      const k = (n + h / 30) % 12;
-      const color = l - a * Math.max(Math.min(k - 3, 9 - k, 1), -1);
-      return Math.round(255 * color).toString(16).padStart(2, '0');
-    };
-    return `#${f(0)}${f(8)}${f(4)}`;
+    let c = (1 - Math.abs(2 * l - 1)) * s,
+        x = c * (1 - Math.abs((h / 60) % 2 - 1)),
+        m = l - c/2,
+        r = 0, g = 0, b = 0;
+    
+    if (0 <= h && h < 60) { r = c; g = x; b = 0; }
+    else if (60 <= h && h < 120) { r = x; g = c; b = 0; }
+    else if (120 <= h && h < 180) { r = 0; g = c; b = x; }
+    else if (180 <= h && h < 240) { r = 0; g = x; b = c; }
+    else if (240 <= h && h < 300) { r = x; g = 0; b = c; }
+    else if (300 <= h && h < 360) { r = c; g = 0; b = x; }
+    
+    r = Math.round((r + m) * 255).toString(16);
+    g = Math.round((g + m) * 255).toString(16);
+    b = Math.round((b + m) * 255).toString(16);
+    
+    if (r.length === 1) r = "0" + r;
+    if (g.length === 1) g = "0" + g;
+    if (b.length === 1) b = "0" + b;
+    
+    return "#" + r + g + b;
   }
 
   function generateColorScales(hex) {
-    const hsl = hexToHSL(hex);
-    
-    const lightBg = '#ebedf0';
+    const { h, s, l } = hexToHSL(hex);
     const lightColors = [
-      lightBg,
-      hslToHex(hsl.h, hsl.s, Math.max(hsl.l, 80)),
-      hslToHex(hsl.h, hsl.s, Math.max(hsl.l - 10, 65)),
-      hslToHex(hsl.h, hsl.s, Math.max(hsl.l - 20, 50)),
-      hslToHex(hsl.h, hsl.s, Math.max(hsl.l - 35, 35)),
+      '#ebedf0',
+      hslToHex(h, s, Math.min(l + 30, 90)),
+      hslToHex(h, s, Math.min(l + 15, 75)),
+      hslToHex(h, s, l),
+      hslToHex(h, s, Math.max(l - 15, 20))
     ];
-
-    const darkBg = '#161b22';
     const darkColors = [
-      darkBg,
-      hslToHex(hsl.h, hsl.s, Math.min(hsl.l - 20, 20)),
-      hslToHex(hsl.h, hsl.s, Math.min(hsl.l, 35)),
-      hslToHex(hsl.h, hsl.s, Math.min(hsl.l + 15, 50)),
-      hslToHex(hsl.h, hsl.s, Math.min(hsl.l + 30, 65)),
+      '#161b22',
+      hslToHex(h, Math.max(s - 20, 0), Math.max(l - 30, 15)),
+      hslToHex(h, Math.max(s - 10, 0), Math.max(l - 15, 25)),
+      hslToHex(h, s, l),
+      hslToHex(h, Math.min(s + 10, 100), Math.min(l + 15, 85))
     ];
-
     return { lightColors, darkColors };
   }
 
@@ -78,35 +86,22 @@
 
     const modeSolidBtn = document.getElementById('modeSolidBtn');
     const modeGradientBtn = document.getElementById('modeGradientBtn');
-    const modeCustomBtn = document.getElementById('modeCustomBtn');
     
     const solidControls = document.getElementById('solidControls');
     const gradientControls = document.getElementById('gradientControls');
-    const customControls = document.getElementById('customControls');
 
     // Solid
     const colorPicker = document.getElementById('primaryColor');
     
-    // Gradient (Simple)
+    // Gradient
     const gradStartColor = document.getElementById('gradStartColor');
     const gradEndColor = document.getElementById('gradEndColor');
-    const gradDirection = document.getElementById('gradDirection');
 
-    // Custom
-    const stopsContainer = document.getElementById('stopsContainer');
-    const addStopBtn = document.getElementById('addStopBtn');
-    const customX1 = document.getElementById('customX1');
-    const customY1 = document.getElementById('customY1');
-    const customX2 = document.getElementById('customX2');
-    const customY2 = document.getElementById('customY2');
-    const bgLight = document.getElementById('bgLight');
-    const bgDark = document.getElementById('bgDark');
-
-    let currentMode = 'solid'; // 'solid', 'gradient', 'custom'
-    let customStops = [
-      { color: '#fbbf24', offset: 0 },
-      { color: '#34d399', offset: 100 }
-    ];
+    let currentMode = 'solid'; // 'solid', 'gradient'
+    let gradX1 = 0;
+    let gradY1 = 0;
+    let gradX2 = 100;
+    let gradY2 = 100;
 
     // Grid constants
     const cellSize = 10;
@@ -116,59 +111,6 @@
     const width = 53 * (cellSize + cellGap) + paddingX + 10;
     const height = 7 * (cellSize + cellGap) + paddingY + 10;
 
-    function renderStopsUI() {
-      stopsContainer.innerHTML = '';
-      customStops.forEach((stop, index) => {
-        const row = document.createElement('div');
-        row.className = 'flex items-center gap-3';
-        row.innerHTML = `
-          <input type="color" value="${stop.color}" class="stop-color w-8 h-8 rounded border-none cursor-pointer" data-index="${index}">
-          <input type="range" value="${stop.offset}" min="0" max="100" class="stop-offset flex-1" data-index="${index}">
-          <span class="text-xs text-textSoft w-8 text-right">${stop.offset}%</span>
-          <button class="remove-stop text-red-500 hover:text-red-400 font-bold px-2" data-index="${index}">×</button>
-        `;
-        stopsContainer.appendChild(row);
-      });
-
-      // Bind stop events
-      document.querySelectorAll('.stop-color').forEach(el => {
-        el.addEventListener('input', (e) => {
-          customStops[e.target.dataset.index].color = e.target.value;
-          renderAll();
-        });
-      });
-      document.querySelectorAll('.stop-offset').forEach(el => {
-        el.addEventListener('input', (e) => {
-          customStops[e.target.dataset.index].offset = parseInt(e.target.value, 10);
-          e.target.nextElementSibling.textContent = e.target.value + '%';
-          renderAll();
-        });
-      });
-      document.querySelectorAll('.remove-stop').forEach(el => {
-        el.addEventListener('click', (e) => {
-          if (customStops.length > 2) {
-            customStops.splice(e.target.dataset.index, 1);
-            renderStopsUI();
-            renderAll();
-          } else {
-            alert('You need at least 2 color stops for a gradient.');
-          }
-        });
-      });
-    }
-
-    addStopBtn.addEventListener('click', () => {
-      customStops.push({ color: '#ffffff', offset: 50 });
-      customStops.sort((a, b) => a.offset - b.offset);
-      renderStopsUI();
-      renderAll();
-    });
-
-    // Custom XY Input Binds
-    [customX1, customY1, customX2, customY2, bgLight, bgDark].forEach(el => {
-      el.addEventListener('input', renderAll);
-    });
-
     function setMode(mode) {
       currentMode = mode;
       
@@ -177,66 +119,63 @@
 
       modeSolidBtn.classList.remove(...activeBtnClass, ...inactiveBtnClass);
       modeGradientBtn.classList.remove(...activeBtnClass, ...inactiveBtnClass);
-      modeCustomBtn.classList.remove(...activeBtnClass, ...inactiveBtnClass);
 
       if (mode === 'solid') {
         modeSolidBtn.classList.add(...activeBtnClass);
         modeGradientBtn.classList.add(...inactiveBtnClass);
-        modeCustomBtn.classList.add(...inactiveBtnClass);
         
         solidControls.classList.remove('hidden');
         gradientControls.classList.add('hidden');
-        customControls.classList.add('hidden');
       } else if (mode === 'gradient') {
         modeGradientBtn.classList.add(...activeBtnClass);
         modeSolidBtn.classList.add(...inactiveBtnClass);
-        modeCustomBtn.classList.add(...inactiveBtnClass);
         
         gradientControls.classList.remove('hidden');
         solidControls.classList.add('hidden');
-        customControls.classList.add('hidden');
-      } else {
-        modeCustomBtn.classList.add(...activeBtnClass);
-        modeSolidBtn.classList.add(...inactiveBtnClass);
-        modeGradientBtn.classList.add(...inactiveBtnClass);
-        
-        customControls.classList.remove('hidden');
-        solidControls.classList.add('hidden');
-        gradientControls.classList.add('hidden');
       }
       renderAll();
     }
 
     modeSolidBtn.addEventListener('click', () => setMode('solid'));
     modeGradientBtn.addEventListener('click', () => setMode('gradient'));
-    modeCustomBtn.addEventListener('click', () => setMode('custom'));
 
     colorPicker.addEventListener('input', renderAll);
     gradStartColor.addEventListener('input', renderAll);
     gradEndColor.addEventListener('input', renderAll);
-    gradDirection.addEventListener('change', renderAll);
     usernameInput.addEventListener('input', updateProfileCode);
-
-    const fakeWeeks = Array.from({ length: 53 }, () => ({
-      contributionDays: Array.from({ length: 7 }, () => {
-        const rand = Math.random();
-        let level = 0;
-        if (rand > 0.6) level = 1;
-        if (rand > 0.8) level = 2;
-        if (rand > 0.9) level = 3;
-        if (rand > 0.95) level = 4;
-        return { level };
-      })
-    }));
 
     function updateProfileCode() {
       const username = usernameInput.value.trim() || 'your-username';
-      exportProfileCode.textContent = `![My Custom Activity Graph](https://raw.githubusercontent.com/${username}/Pastime/main/activity-graph.svg)`;
+      exportProfileCode.textContent = `[![${username}'s Activity Graph](https://github-readme-activity-graph.vercel.app/graph?username=${username}&theme=pastime)](https://github.com/Liyfez/Pastime)`;
     }
 
+    // Single global binding flag for window mouse events
+    let isEditorBound = false;
+
     function renderAll() {
+      const fakeWeeks = Array.from({ length: 53 }, (_, wIndex) => ({
+        contributionDays: Array.from({ length: 7 }, (_, dIndex) => {
+          let level = Math.floor(Math.random() * 5);
+          if (wIndex < 5 && dIndex < 3) level = 0; // Empty corner
+          return { level, date: `2026-01-01` };
+        })
+      }));
+
       const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-      const monthLabels = months.map((month, i) => `<text class="label" x="${i * 60}" y="-8">${month}</text>`).join('');
+      let monthLabels = '';
+      let rects = '';
+      
+      for (let i = 0; i < 12; i++) {
+        monthLabels += `<text class="label" x="${i * 50}" y="-8">${months[i]}</text>\n`;
+      }
+
+      fakeWeeks.forEach((week, w) => {
+        const x = w * (cellSize + cellGap);
+        week.contributionDays.forEach((day, d) => {
+          const y = d * (cellSize + cellGap);
+          rects += `<rect class="day level-${day.level}" x="${x}" y="${y}" width="${cellSize}" height="${cellSize}"></rect>\n`;
+        });
+      });
 
       const dayLabels = `
         <text class="label" x="-25" y="${1 * (cellSize + cellGap) + 9}">Mon</text>
@@ -244,20 +183,12 @@
         <text class="label" x="-25" y="${5 * (cellSize + cellGap) + 9}">Fri</text>
       `;
 
-      const rects = fakeWeeks.map((week, weekIndex) => {
-        const x = weekIndex * (cellSize + cellGap);
-        return week.contributionDays.map((day, dayOfWeek) => {
-          const y = dayOfWeek * (cellSize + cellGap);
-          return `<rect class="day level-${day.level}" x="${x}" y="${y}" width="${cellSize}" height="${cellSize}"></rect>`;
-        }).join('');
-      }).join('');
-
-      let svgHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${width} ${height}" width="${width}" height="${height}" style="position:relative; z-index:1;">`;
+      let svgHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${width} ${height}" width="100%" height="100%">\n`;
 
       if (currentMode === 'solid') {
         const hex = colorPicker.value || '#fbbf24';
         const { lightColors, darkColors } = generateColorScales(hex);
-
+        
         svgHTML += `
           <style>
             .day { rx: 2; ry: 2; shape-rendering: geometricPrecision; }
@@ -277,27 +208,17 @@
             }
           </style>`;
 
-        exportActionCode.textContent = `env:\n  GITHUB_TOKEN: \${{ secrets.GH_TOKEN_FOR_GRAPH }}\n  GITHUB_USERNAME: \${{ github.repository_owner }}\n  LIGHT_THEME: '${lightColors.join(',')}'\n  DARK_THEME: '${darkColors.join(',')}'`;
-      } 
-      else if (currentMode === 'gradient') {
+        const lightList = lightColors.join(',');
+        const darkList = darkColors.join(',');
+        exportActionCode.textContent = `env:\n  GITHUB_TOKEN: \${{ secrets.GH_TOKEN_FOR_GRAPH }}\n  GITHUB_USERNAME: \${{ github.repository_owner }}\n  THEME_MODE: 'solid'\n  LIGHT_THEME: '${lightList}'\n  DARK_THEME: '${darkList}'`;
+
+      } else if (currentMode === 'gradient') {
         const startColor = gradStartColor.value || '#fbbf24';
         const endColor = gradEndColor.value || '#34d399';
-        const dir = gradDirection.value || 'left-to-right';
-        
-        let x1 = '0%', y1 = '0%', x2 = '100%', y2 = '100%';
-        switch (dir) {
-          case 'left-to-right': x2 = '100%'; y2 = '0%'; break;
-          case 'top-to-bottom': x2 = '0%'; y2 = '100%'; break;
-          case 'top-left-to-bottom-right': x2 = '100%'; y2 = '100%'; break;
-          case 'bottom-left-to-top-right': y1 = '100%'; x2 = '100%'; y2 = '0%'; break;
-        }
-
-        const lightBg = '#ebedf0';
-        const darkBg = '#161b22';
 
         svgHTML += `
           <defs>
-            <linearGradient id="heatmap-grad" gradientUnits="userSpaceOnUse" x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}">
+            <linearGradient id="heatmap-grad" gradientUnits="userSpaceOnUse" x1="${gradX1}%" y1="${gradY1}%" x2="${gradX2}%" y2="${gradY2}%">
               <stop offset="0%" stop-color="${startColor}" />
               <stop offset="100%" stop-color="${endColor}" />
             </linearGradient>
@@ -305,58 +226,18 @@
           <style>
             .day { rx: 2; ry: 2; shape-rendering: geometricPrecision; }
             .label { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; font-size: 10px; fill: #57606a; }
-            .level-0 { fill: ${lightBg}; }
+            .level-0 { fill: #ebedf0; }
             .level-1 { fill: url(#heatmap-grad); opacity: 0.3; }
             .level-2 { fill: url(#heatmap-grad); opacity: 0.55; }
             .level-3 { fill: url(#heatmap-grad); opacity: 0.8; }
             .level-4 { fill: url(#heatmap-grad); opacity: 1.0; }
             @media (prefers-color-scheme: dark) {
               .label { fill: #768390; }
-              .level-0 { fill: ${darkBg}; }
+              .level-0 { fill: #161b22; }
             }
           </style>`;
 
-        exportActionCode.textContent = `env:\n  GITHUB_TOKEN: \${{ secrets.GH_TOKEN_FOR_GRAPH }}\n  GITHUB_USERNAME: \${{ github.repository_owner }}\n  THEME_MODE: 'gradient'\n  GRADIENT_START: '${startColor}'\n  GRADIENT_END: '${endColor}'\n  GRADIENT_DIR: '${dir}'\n  BG_EMPTY_LIGHT: '${lightBg}'\n  BG_EMPTY_DARK: '${darkBg}'`;
-      }
-      else if (currentMode === 'custom') {
-        // Advanced Custom Theme
-        const x1 = Math.max(0, Math.min(100, customX1.value || 0));
-        const y1 = Math.max(0, Math.min(100, customY1.value || 0));
-        const x2 = Math.max(0, Math.min(100, customX2.value || 100));
-        const y2 = Math.max(0, Math.min(100, customY2.value || 100));
-        const lBg = bgLight.value || '#ebedf0';
-        const dBg = bgDark.value || '#161b22';
-
-        // Sort stops correctly before rendering
-        const sortedStops = [...customStops].sort((a,b) => a.offset - b.offset);
-        const stopsStr = sortedStops.map(s => `${s.color}:${s.offset}%`).join(',');
-        
-        let stopsSVG = '';
-        for (const s of sortedStops) {
-          stopsSVG += `<stop offset="${s.offset}%" stop-color="${s.color}" />\n`;
-        }
-
-        svgHTML += `
-          <defs>
-            <linearGradient id="heatmap-grad" gradientUnits="userSpaceOnUse" x1="${x1}%" y1="${y1}%" x2="${x2}%" y2="${y2}%">
-              ${stopsSVG}
-            </linearGradient>
-          </defs>
-          <style>
-            .day { rx: 2; ry: 2; shape-rendering: geometricPrecision; }
-            .label { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; font-size: 10px; fill: #57606a; }
-            .level-0 { fill: ${lBg}; }
-            .level-1 { fill: url(#heatmap-grad); opacity: 0.3; }
-            .level-2 { fill: url(#heatmap-grad); opacity: 0.55; }
-            .level-3 { fill: url(#heatmap-grad); opacity: 0.8; }
-            .level-4 { fill: url(#heatmap-grad); opacity: 1.0; }
-            @media (prefers-color-scheme: dark) {
-              .label { fill: #768390; }
-              .level-0 { fill: ${dBg}; }
-            }
-          </style>`;
-
-        exportActionCode.textContent = `env:\n  GITHUB_TOKEN: \${{ secrets.GH_TOKEN_FOR_GRAPH }}\n  GITHUB_USERNAME: \${{ github.repository_owner }}\n  THEME_MODE: 'custom'\n  GRADIENT_STOPS: '${stopsStr}'\n  GRADIENT_X1: '${x1}%'\n  GRADIENT_Y1: '${y1}%'\n  GRADIENT_X2: '${x2}%'\n  GRADIENT_Y2: '${y2}%'\n  BG_EMPTY_LIGHT: '${lBg}'\n  BG_EMPTY_DARK: '${dBg}'`;
+        exportActionCode.textContent = `env:\n  GITHUB_TOKEN: \${{ secrets.GH_TOKEN_FOR_GRAPH }}\n  GITHUB_USERNAME: \${{ github.repository_owner }}\n  THEME_MODE: 'gradient'\n  GRADIENT_START: '${startColor}'\n  GRADIENT_END: '${endColor}'\n  GRADIENT_X1: '${gradX1}%'\n  GRADIENT_Y1: '${gradY1}%'\n  GRADIENT_X2: '${gradX2}%'\n  GRADIENT_Y2: '${gradY2}%'`;
       }
 
       svgHTML += `
@@ -368,20 +249,16 @@
         </svg>
       `;
 
-      // Interactive Editor Layer (Only in Custom Mode)
-      if (currentMode === 'custom') {
-        const x1 = customX1.value || 0;
-        const y1 = customY1.value || 0;
-        const x2 = customX2.value || 100;
-        const y2 = customY2.value || 100;
-        const startColor = customStops[0]?.color || '#ffffff';
-        const endColor = customStops[customStops.length-1]?.color || '#ffffff';
+      // Interactive Editor Layer (Only in Gradient Mode)
+      if (currentMode === 'gradient') {
+        const startColor = gradStartColor.value || '#fbbf24';
+        const endColor = gradEndColor.value || '#34d399';
 
         svgHTML += `
           <svg id="interactiveOverlay" style="position:absolute; top:0; left:0; width:100%; height:100%; z-index:10; pointer-events:none;" viewBox="0 0 100 100" preserveAspectRatio="none">
-            <line id="editorLine" x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="rgba(255,255,255,0.5)" stroke-width="0.5" stroke-dasharray="2,1" />
-            <circle id="node1" cx="${x1}" cy="${y1}" r="3" fill="${startColor}" stroke="#fff" stroke-width="0.5" style="pointer-events:all; cursor:grab;" />
-            <circle id="node2" cx="${x2}" cy="${y2}" r="3" fill="${endColor}" stroke="#fff" stroke-width="0.5" style="pointer-events:all; cursor:grab;" />
+            <line id="editorLine" x1="${gradX1}" y1="${gradY1}" x2="${gradX2}" y2="${gradY2}" stroke="rgba(255,255,255,0.5)" stroke-width="0.5" stroke-dasharray="2,1" />
+            <circle id="node1" cx="${gradX1}" cy="${gradY1}" r="3" fill="${startColor}" stroke="#fff" stroke-width="0.5" style="pointer-events:all; cursor:grab;" />
+            <circle id="node2" cx="${gradX2}" cy="${gradY2}" r="3" fill="${endColor}" stroke="#fff" stroke-width="0.5" style="pointer-events:all; cursor:grab;" />
           </svg>
         `;
       }
@@ -389,14 +266,21 @@
       svgContainer.innerHTML = `<div style="position:relative; width:${width}px; height:${height}px;">${svgHTML}</div>`;
       updateProfileCode();
 
-      if (currentMode === 'custom') bindInteractiveEditor();
+      if (currentMode === 'gradient') {
+        bindInteractiveEditorNodes();
+        if (!isEditorBound) {
+          bindInteractiveEditorGlobal();
+          isEditorBound = true;
+        }
+      }
     }
 
-    function bindInteractiveEditor() {
-      const overlay = document.getElementById('interactiveOverlay');
+    let draggingNode = null;
+
+    function bindInteractiveEditorNodes() {
       const node1 = document.getElementById('node1');
       const node2 = document.getElementById('node2');
-      let draggingNode = null;
+      if (!node1 || !node2) return;
 
       function onPointerDown(e, nodeStr) {
         draggingNode = nodeStr;
@@ -404,8 +288,18 @@
         e.preventDefault();
       }
 
+      node1.addEventListener('mousedown', (e) => onPointerDown(e, 'node1'));
+      node2.addEventListener('mousedown', (e) => onPointerDown(e, 'node2'));
+      node1.addEventListener('touchstart', (e) => onPointerDown(e.touches[0], 'node1'), {passive: false});
+      node2.addEventListener('touchstart', (e) => onPointerDown(e.touches[0], 'node2'), {passive: false});
+    }
+
+    function bindInteractiveEditorGlobal() {
       function onPointerMove(e) {
         if (!draggingNode) return;
+        const overlay = document.getElementById('interactiveOverlay');
+        if (!overlay) return;
+
         const rect = overlay.getBoundingClientRect();
         
         let x = ((e.clientX - rect.left) / rect.width) * 100;
@@ -415,11 +309,11 @@
         y = Math.round(Math.max(0, Math.min(100, y)));
 
         if (draggingNode === 'node1') {
-          customX1.value = x;
-          customY1.value = y;
+          gradX1 = x;
+          gradY1 = y;
         } else {
-          customX2.value = x;
-          customY2.value = y;
+          gradX2 = x;
+          gradY2 = y;
         }
         
         // Fast UI update
@@ -437,18 +331,16 @@
 
         const grad = document.getElementById('heatmap-grad');
         if (grad) {
-          grad.setAttribute('x1', customX1.value + '%');
-          grad.setAttribute('y1', customY1.value + '%');
-          grad.setAttribute('x2', customX2.value + '%');
-          grad.setAttribute('y2', customY2.value + '%');
+          grad.setAttribute('x1', gradX1 + '%');
+          grad.setAttribute('y1', gradY1 + '%');
+          grad.setAttribute('x2', gradX2 + '%');
+          grad.setAttribute('y2', gradY2 + '%');
         }
 
         // Fast YAML update without full re-render
-        const sortedStops = [...customStops].sort((a,b) => a.offset - b.offset);
-        const stopsStr = sortedStops.map(s => `${s.color}:${s.offset}%`).join(',');
-        const lBg = bgLight.value || '#ebedf0';
-        const dBg = bgDark.value || '#161b22';
-        exportActionCode.textContent = `env:\n  GITHUB_TOKEN: \${{ secrets.GH_TOKEN_FOR_GRAPH }}\n  GITHUB_USERNAME: \${{ github.repository_owner }}\n  THEME_MODE: 'custom'\n  GRADIENT_STOPS: '${stopsStr}'\n  GRADIENT_X1: '${customX1.value}%'\n  GRADIENT_Y1: '${customY1.value}%'\n  GRADIENT_X2: '${customX2.value}%'\n  GRADIENT_Y2: '${customY2.value}%'\n  BG_EMPTY_LIGHT: '${lBg}'\n  BG_EMPTY_DARK: '${dBg}'`;
+        const startColor = gradStartColor.value || '#fbbf24';
+        const endColor = gradEndColor.value || '#34d399';
+        exportActionCode.textContent = `env:\n  GITHUB_TOKEN: \${{ secrets.GH_TOKEN_FOR_GRAPH }}\n  GITHUB_USERNAME: \${{ github.repository_owner }}\n  THEME_MODE: 'gradient'\n  GRADIENT_START: '${startColor}'\n  GRADIENT_END: '${endColor}'\n  GRADIENT_X1: '${gradX1}%'\n  GRADIENT_Y1: '${gradY1}%'\n  GRADIENT_X2: '${gradX2}%'\n  GRADIENT_Y2: '${gradY2}%'`;
       }
 
       function onPointerUp(e) {
@@ -458,11 +350,6 @@
           draggingNode = null;
         }
       }
-
-      node1.addEventListener('mousedown', (e) => onPointerDown(e, 'node1'));
-      node2.addEventListener('mousedown', (e) => onPointerDown(e, 'node2'));
-      node1.addEventListener('touchstart', (e) => onPointerDown(e.touches[0], 'node1'), {passive: false});
-      node2.addEventListener('touchstart', (e) => onPointerDown(e.touches[0], 'node2'), {passive: false});
 
       window.addEventListener('mousemove', onPointerMove);
       window.addEventListener('touchmove', (e) => onPointerMove(e.touches[0]), {passive: false});
@@ -500,7 +387,6 @@
     attachClipboardHandler('copyActionBtn', 'exportActionCode');
     attachClipboardHandler('copyProfileBtn', 'exportProfileCode');
 
-    renderStopsUI();
     setMode('solid');
   });
 })();
