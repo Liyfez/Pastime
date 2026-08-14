@@ -83,30 +83,33 @@
 
   // Application initialization
   document.addEventListener('DOMContentLoaded', () => {
-    // Cache DOM elements
     const svgContainer = document.getElementById('svgContainer');
     const exportActionCode = document.getElementById('exportActionCode');
     const exportProfileCode = document.getElementById('exportProfileCode');
     const usernameInput = document.getElementById('usernameInput');
 
-    // Mode Toggle Elements
     const modeSolidBtn = document.getElementById('modeSolidBtn');
     const modeGradientBtn = document.getElementById('modeGradientBtn');
     const solidControls = document.getElementById('solidControls');
     const gradientControls = document.getElementById('gradientControls');
 
-    // Control Inputs
     const colorPicker = document.getElementById('primaryColor');
     const gradStartColor = document.getElementById('gradStartColor');
     const gradEndColor = document.getElementById('gradEndColor');
-    const gradDirection = document.getElementById('gradDirection');
-
-    let currentMode = 'solid'; // 'solid' or 'gradient'
 
     if (!svgContainer || !exportActionCode || !exportProfileCode || !colorPicker || !usernameInput) {
       console.error('Pastime Initialization Error: Required DOM elements are missing.');
       return;
     }
+
+    let currentMode = 'solid'; // 'solid' or 'gradient'
+    
+    // Interactive Gradient State
+    // Coordinates are percentages 0-100
+    let gradState = {
+      x1: 0, y1: 0,
+      x2: 100, y2: 100
+    };
 
     // Grid constants
     const cellSize = 10;
@@ -116,7 +119,6 @@
     const width = 53 * (cellSize + cellGap) + paddingX + 10;
     const height = 7 * (cellSize + cellGap) + paddingY + 10;
 
-    // Mode switching logic
     function setMode(mode) {
       currentMode = mode;
       if (mode === 'solid') {
@@ -148,14 +150,11 @@
     modeSolidBtn.addEventListener('click', () => setMode('solid'));
     modeGradientBtn.addEventListener('click', () => setMode('gradient'));
 
-    // Attach Input Listeners
     colorPicker.addEventListener('input', renderAll);
     gradStartColor.addEventListener('input', renderAll);
     gradEndColor.addEventListener('input', renderAll);
-    gradDirection.addEventListener('change', renderAll);
     usernameInput.addEventListener('input', updateProfileCode);
 
-    // Generate static fake heat map data
     const fakeWeeks = Array.from({ length: 53 }, () => ({
       contributionDays: Array.from({ length: 7 }, () => {
         const rand = Math.random();
@@ -191,7 +190,7 @@
         }).join('');
       }).join('');
 
-      let svgHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${width} ${height}" width="${width}" height="${height}">`;
+      let svgHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${width} ${height}" width="${width}" height="${height}" style="position:relative; z-index:1;">`;
 
       if (currentMode === 'solid') {
         const hex = colorPicker.value || '#fbbf24';
@@ -221,22 +220,13 @@
       else if (currentMode === 'gradient') {
         const startColor = gradStartColor.value || '#fbbf24';
         const endColor = gradEndColor.value || '#34d399';
-        const dir = gradDirection.value || 'left-to-right';
         
-        let x1 = '0%', y1 = '0%', x2 = '100%', y2 = '100%';
-        switch (dir) {
-          case 'left-to-right': x2 = '100%'; y2 = '0%'; break;
-          case 'top-to-bottom': x2 = '0%'; y2 = '100%'; break;
-          case 'top-left-to-bottom-right': x2 = '100%'; y2 = '100%'; break;
-          case 'bottom-left-to-top-right': y1 = '100%'; x2 = '100%'; y2 = '0%'; break;
-        }
-
         const lightBg = '#ebedf0';
         const darkBg = '#161b22';
 
         svgHTML += `
           <defs>
-            <linearGradient id="heatmap-grad" gradientUnits="userSpaceOnUse" x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}">
+            <linearGradient id="heatmap-grad" gradientUnits="userSpaceOnUse" x1="${gradState.x1}%" y1="${gradState.y1}%" x2="${gradState.x2}%" y2="${gradState.y2}%">
               <stop offset="0%" stop-color="${startColor}" />
               <stop offset="100%" stop-color="${endColor}" />
             </linearGradient>
@@ -255,7 +245,7 @@
             }
           </style>`;
 
-        exportActionCode.textContent = `env:\n  GITHUB_TOKEN: \${{ secrets.GH_TOKEN_FOR_GRAPH }}\n  GITHUB_USERNAME: \${{ github.repository_owner }}\n  THEME_MODE: 'gradient'\n  GRADIENT_START: '${startColor}'\n  GRADIENT_END: '${endColor}'\n  GRADIENT_DIR: '${dir}'\n  BG_EMPTY_LIGHT: '${lightBg}'\n  BG_EMPTY_DARK: '${darkBg}'`;
+        exportActionCode.textContent = `env:\n  GITHUB_TOKEN: \${{ secrets.GH_TOKEN_FOR_GRAPH }}\n  GITHUB_USERNAME: \${{ github.repository_owner }}\n  THEME_MODE: 'gradient'\n  GRADIENT_START: '${startColor}'\n  GRADIENT_END: '${endColor}'\n  GRADIENT_X1: '${gradState.x1.toFixed(1)}%'\n  GRADIENT_Y1: '${gradState.y1.toFixed(1)}%'\n  GRADIENT_X2: '${gradState.x2.toFixed(1)}%'\n  GRADIENT_Y2: '${gradState.y2.toFixed(1)}%'\n  BG_EMPTY_LIGHT: '${lightBg}'\n  BG_EMPTY_DARK: '${darkBg}'`;
       }
 
       svgHTML += `
@@ -267,13 +257,111 @@
         </svg>
       `;
 
-      svgContainer.innerHTML = svgHTML.trim();
+      // Interactive Editor Layer
+      if (currentMode === 'gradient') {
+        const startColor = gradStartColor.value || '#fbbf24';
+        const endColor = gradEndColor.value || '#34d399';
+        
+        svgHTML += `
+          <svg id="interactiveOverlay" style="position:absolute; top:0; left:0; width:100%; height:100%; z-index:10; pointer-events:none;" viewBox="0 0 100 100" preserveAspectRatio="none">
+            <line id="editorLine" x1="${gradState.x1}" y1="${gradState.y1}" x2="${gradState.x2}" y2="${gradState.y2}" stroke="rgba(255,255,255,0.5)" stroke-width="0.5" stroke-dasharray="2,1" />
+            <circle id="node1" cx="${gradState.x1}" cy="${gradState.y1}" r="3" fill="${startColor}" stroke="#fff" stroke-width="0.5" style="pointer-events:all; cursor:grab;" />
+            <circle id="node2" cx="${gradState.x2}" cy="${gradState.y2}" r="3" fill="${endColor}" stroke="#fff" stroke-width="0.5" style="pointer-events:all; cursor:grab;" />
+          </svg>
+        `;
+      }
+
+      // We wrap the SVG in a relative div to allow the absolute overlay
+      svgContainer.innerHTML = `<div style="position:relative; width:${width}px; height:${height}px;">${svgHTML}</div>`;
+      
       updateProfileCode();
+
+      // Bind interactive editor events
+      if (currentMode === 'gradient') bindInteractiveEditor();
     }
 
-    /**
-     * Attaches robust copy-to-clipboard functionality to a button
-     */
+    function bindInteractiveEditor() {
+      const overlay = document.getElementById('interactiveOverlay');
+      const node1 = document.getElementById('node1');
+      const node2 = document.getElementById('node2');
+      let draggingNode = null;
+
+      function onPointerDown(e, nodeStr) {
+        draggingNode = nodeStr;
+        e.target.style.cursor = 'grabbing';
+        e.preventDefault();
+      }
+
+      function onPointerMove(e) {
+        if (!draggingNode) return;
+        const rect = overlay.getBoundingClientRect();
+        
+        // Calculate percentage inside the SVG container
+        let x = ((e.clientX - rect.left) / rect.width) * 100;
+        let y = ((e.clientY - rect.top) / rect.height) * 100;
+        
+        // Clamp to 0-100
+        x = Math.max(0, Math.min(100, x));
+        y = Math.max(0, Math.min(100, y));
+
+        if (draggingNode === 'node1') {
+          gradState.x1 = x;
+          gradState.y1 = y;
+        } else {
+          gradState.x2 = x;
+          gradState.y2 = y;
+        }
+        
+        // Fast UI update for the drag overlay
+        document.getElementById(draggingNode).setAttribute('cx', x);
+        document.getElementById(draggingNode).setAttribute('cy', y);
+        
+        const line = document.getElementById('editorLine');
+        if (draggingNode === 'node1') {
+          line.setAttribute('x1', x);
+          line.setAttribute('y1', y);
+        } else {
+          line.setAttribute('x2', x);
+          line.setAttribute('y2', y);
+        }
+
+        // Fast update for the live gradient
+        const grad = document.getElementById('heatmap-grad');
+        if (grad) {
+          grad.setAttribute('x1', gradState.x1 + '%');
+          grad.setAttribute('y1', gradState.y1 + '%');
+          grad.setAttribute('x2', gradState.x2 + '%');
+          grad.setAttribute('y2', gradState.y2 + '%');
+        }
+
+        // Update YAML code block live
+        const startColor = gradStartColor.value || '#fbbf24';
+        const endColor = gradEndColor.value || '#34d399';
+        const lightBg = '#ebedf0';
+        const darkBg = '#161b22';
+        exportActionCode.textContent = `env:\n  GITHUB_TOKEN: \${{ secrets.GH_TOKEN_FOR_GRAPH }}\n  GITHUB_USERNAME: \${{ github.repository_owner }}\n  THEME_MODE: 'gradient'\n  GRADIENT_START: '${startColor}'\n  GRADIENT_END: '${endColor}'\n  GRADIENT_X1: '${gradState.x1.toFixed(1)}%'\n  GRADIENT_Y1: '${gradState.y1.toFixed(1)}%'\n  GRADIENT_X2: '${gradState.x2.toFixed(1)}%'\n  GRADIENT_Y2: '${gradState.y2.toFixed(1)}%'\n  BG_EMPTY_LIGHT: '${lightBg}'\n  BG_EMPTY_DARK: '${darkBg}'`;
+      }
+
+      function onPointerUp(e) {
+        if (draggingNode) {
+          const node = document.getElementById(draggingNode);
+          if (node) node.style.cursor = 'grab';
+          draggingNode = null;
+        }
+      }
+
+      node1.addEventListener('mousedown', (e) => onPointerDown(e, 'node1'));
+      node2.addEventListener('mousedown', (e) => onPointerDown(e, 'node2'));
+      node1.addEventListener('touchstart', (e) => onPointerDown(e.touches[0], 'node1'), {passive: false});
+      node2.addEventListener('touchstart', (e) => onPointerDown(e.touches[0], 'node2'), {passive: false});
+
+      window.addEventListener('mousemove', onPointerMove);
+      window.addEventListener('touchmove', (e) => onPointerMove(e.touches[0]), {passive: false});
+
+      window.addEventListener('mouseup', onPointerUp);
+      window.addEventListener('touchend', onPointerUp);
+    }
+
     function attachClipboardHandler(buttonId, targetId) {
       const button = document.getElementById(buttonId);
       const target = document.getElementById(targetId);
@@ -303,7 +391,6 @@
     attachClipboardHandler('copyActionBtn', 'exportActionCode');
     attachClipboardHandler('copyProfileBtn', 'exportProfileCode');
 
-    // Initial render
     setMode('solid');
   });
 })();

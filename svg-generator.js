@@ -54,15 +54,10 @@ export function generateSVG(weeks, lightColors, darkColors, themeConfig = {}) {
   if (isGradient) {
     const start = themeConfig.start || '#fbbf24';
     const end = themeConfig.end || '#34d399';
-    let x1 = '0%', y1 = '0%', x2 = '100%', y2 = '100%';
-    
-    // Parse direction
-    switch (themeConfig.dir) {
-      case 'left-to-right': x2 = '100%'; y2 = '0%'; break;
-      case 'top-to-bottom': x2 = '0%'; y2 = '100%'; break;
-      case 'top-left-to-bottom-right': x2 = '100%'; y2 = '100%'; break;
-      case 'bottom-left-to-top-right': y1 = '100%'; x2 = '100%'; y2 = '0%'; break;
-    }
+    const x1 = themeConfig.x1 || '0%';
+    const y1 = themeConfig.y1 || '0%';
+    const x2 = themeConfig.x2 || '100%';
+    const y2 = themeConfig.y2 || '100%';
 
     svg += `  <defs>\n`;
     svg += `    <linearGradient id="heatmap-grad" gradientUnits="userSpaceOnUse" x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}">\n`;

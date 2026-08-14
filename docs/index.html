@@ -147,25 +147,16 @@
           <div id="gradientControls" class="hidden transition-opacity duration-300">
             <div class="grid md:grid-cols-2 gap-6 items-center">
               <div>
-                <label for="gradStartColor" class="block text-sm font-medium text-textSoft mb-2 text-left">Start Color</label>
+                <label for="gradStartColor" class="block text-sm font-medium text-textSoft mb-2 text-left">Start Color (Node 1)</label>
                 <input type="color" id="gradStartColor" name="gradStartColor" value="#fbbf24" class="shadow-inner transition-transform hover:scale-[1.02] active:scale-95 duration-200 focus:outline-none focus:ring-2 focus:ring-brandYellow focus:ring-offset-2 focus:ring-offset-bgDark">
               </div>
               <div>
-                <label for="gradEndColor" class="block text-sm font-medium text-textSoft mb-2 text-left">End Color</label>
+                <label for="gradEndColor" class="block text-sm font-medium text-textSoft mb-2 text-left">End Color (Node 2)</label>
                 <input type="color" id="gradEndColor" name="gradEndColor" value="#34d399" class="shadow-inner transition-transform hover:scale-[1.02] active:scale-95 duration-200 focus:outline-none focus:ring-2 focus:ring-brandYellow focus:ring-offset-2 focus:ring-offset-bgDark">
               </div>
             </div>
             
-            <div class="mt-6">
-              <label for="gradDirection" class="block text-sm font-medium text-textSoft mb-2 text-left">Direction</label>
-              <select id="gradDirection" class="w-full bg-bgDark border border-zinc-700 text-textBright rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-brandYellow focus:border-brandYellow transition-colors">
-                <option value="left-to-right">Left to Right</option>
-                <option value="top-to-bottom">Top to Bottom</option>
-                <option value="top-left-to-bottom-right">Top-Left to Bottom-Right</option>
-                <option value="bottom-left-to-top-right">Bottom-Left to Top-Right</option>
-              </select>
-            </div>
-            <p class="text-sm text-textSoft mt-4">Activity intensity is mathematically mapped to gradient opacity!</p>
+            <p class="text-sm text-brandYellow mt-6 font-medium">✨ Drag the nodes on the preview below to position your gradient! ✨</p>
           </div>
         </div>
       </section>
