@@ -67,18 +67,13 @@ export function generateSVG(weeks, lightColors, darkColors, themeConfig = {}) {
       ];
     }
     
-    let x1 = '0%', y1 = '0%', x2 = '100%', y2 = '100%';
-    
-    // Parse direction
-    switch (themeConfig.dir) {
-      case 'left-to-right': x2 = '100%'; y2 = '0%'; break;
-      case 'top-to-bottom': x2 = '0%'; y2 = '100%'; break;
-      case 'top-left-to-bottom-right': x2 = '100%'; y2 = '100%'; break;
-      case 'bottom-left-to-top-right': y1 = '100%'; x2 = '100%'; y2 = '0%'; break;
-    }
+    let absX1 = (parseFloat(themeConfig.x1 || 0) / 100) * width;
+    let absY1 = (parseFloat(themeConfig.y1 || 0) / 100) * height;
+    let absX2 = (parseFloat(themeConfig.x2 || 100) / 100) * width;
+    let absY2 = (parseFloat(themeConfig.y2 || 100) / 100) * height;
 
     svg += `  <defs>\n`;
-    svg += `    <linearGradient id="heatmap-grad" gradientUnits="userSpaceOnUse" x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}">\n`;
+    svg += `    <linearGradient id="heatmap-grad" gradientUnits="userSpaceOnUse" x1="${absX1}" y1="${absY1}" x2="${absX2}" y2="${absY2}">\n`;
     parsedStops.forEach((stop) => {
       svg += `      <stop offset="${stop.offset}" stop-color="${stop.color}" />\n`;
     });

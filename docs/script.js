@@ -446,29 +446,24 @@
         exportActionCode.textContent = `env:\n  GITHUB_TOKEN: \${{ secrets.GH_TOKEN_FOR_GRAPH }}\n  GITHUB_USERNAME: \${{ github.repository_owner }}\n  LIGHT_THEME: '${lightColors.join(',')}'\n  DARK_THEME: '${darkColors.join(',')}'`;
       } 
       else if (currentMode === 'gradient') {
-        const dir = gradDirection.value || 'left-to-right';
+        const math = getGradientMath(gradientStops);
         
-        let x1 = '0%', y1 = '0%', x2 = '100%', y2 = '100%';
-        switch (dir) {
-          case 'left-to-right': x2 = '100%'; y2 = '0%'; break;
-          case 'top-to-bottom': x2 = '0%'; y2 = '100%'; break;
-          case 'top-left-to-bottom-right': x2 = '100%'; y2 = '100%'; break;
-          case 'bottom-left-to-top-right': y1 = '100%'; x2 = '100%'; y2 = '0%'; break;
-        }
-
-        // Sort stops for the SVG rendering correctly
-        const sortedStops = [...gradientStops].sort((a, b) => a.offset - b.offset);
         let stopTags = '';
-        sortedStops.forEach((stop) => {
+        math.projectedStops.forEach((stop) => {
           stopTags += `<stop offset="${stop.offset}%" stop-color="${stop.color}" />\n`;
         });
 
         const lightBg = '#ebedf0';
         const darkBg = '#161b22';
 
+        const absX1 = (math.x1 / 100) * width;
+        const absY1 = (math.y1 / 100) * height;
+        const absX2 = (math.x2 / 100) * width;
+        const absY2 = (math.y2 / 100) * height;
+
         svgHTML += `
           <defs>
-            <linearGradient id="heatmap-grad" gradientUnits="userSpaceOnUse" x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}">
+            <linearGradient id="heatmap-grad" gradientUnits="userSpaceOnUse" x1="${absX1}" y1="${absY1}" x2="${absX2}" y2="${absY2}">
               ${stopTags}
             </linearGradient>
           </defs>
@@ -486,10 +481,9 @@
             }
           </style>`;
 
-        // Export custom config format: #ff0000@0%,#00ff00@85%
-        const stopsString = sortedStops.map(s => `${s.color}@${s.offset}%`).join(',');
+        const stopsString = math.projectedStops.map(s => `${s.color}@${s.offset}%`).join(',');
         
-        exportActionCode.textContent = `env:\n  GITHUB_TOKEN: \${{ secrets.GH_TOKEN_FOR_GRAPH }}\n  GITHUB_USERNAME: \${{ github.repository_owner }}\n  THEME_MODE: 'gradient'\n  GRADIENT_STOPS: '${stopsString}'\n  GRADIENT_DIR: '${dir}'\n  BG_EMPTY_LIGHT: '${lightBg}'\n  BG_EMPTY_DARK: '${darkBg}'`;
+        exportActionCode.textContent = `env:\n  GITHUB_TOKEN: \${{ secrets.GH_TOKEN_FOR_GRAPH }}\n  GITHUB_USERNAME: \${{ github.repository_owner }}\n  THEME_MODE: 'gradient'\n  GRADIENT_STOPS: '${stopsString}'\n  GRADIENT_X1: '${math.x1}'\n  GRADIENT_Y1: '${math.y1}'\n  GRADIENT_X2: '${math.x2}'\n  GRADIENT_Y2: '${math.y2}'\n  BG_EMPTY_LIGHT: '${lightBg}'\n  BG_EMPTY_DARK: '${darkBg}'`;
       }
 
       svgHTML += `
