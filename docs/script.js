@@ -152,13 +152,27 @@
     // Single global binding flag for window mouse events
     let isEditorBound = false;
 
-    // Generate static activity graph once
+    // Generate realistic static activity graph once
+    let streak = 0;
     const fakeWeeks = Array.from({ length: 53 }, (_, wIndex) => ({
       contributionDays: Array.from({ length: 7 }, (_, dIndex) => {
-        let level = Math.floor(Math.sin(wIndex * 0.3 + dIndex * 0.5) * 2.5 + 2.5);
-        if (level > 4) level = 4;
-        if (level < 0) level = 0;
-        if (wIndex < 5 && dIndex < 3) level = 0; // Empty corner
+        // Weekends have lower probability
+        const isWeekend = (dIndex === 0 || dIndex === 6);
+        const baseProb = isWeekend ? 0.3 : 0.7;
+        
+        let level = 0;
+        if (Math.random() < baseProb) {
+          streak++;
+          // Higher levels are more likely during a streak
+          if (streak > 5 && Math.random() < 0.4) level = 4;
+          else if (streak > 2 && Math.random() < 0.6) level = 3;
+          else if (Math.random() < 0.5) level = 2;
+          else level = 1;
+        } else {
+          streak = 0;
+          if (Math.random() < 0.1) level = 1; // occasional tiny commit
+        }
+        
         return { level, date: `2026-01-01` };
       })
     }));
