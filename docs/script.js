@@ -1,111 +1,181 @@
-function hexToHSL(hex) {
-  let r = 0, g = 0, b = 0;
-  if (hex.length === 4) {
-    r = parseInt(hex[1] + hex[1], 16);
-    g = parseInt(hex[2] + hex[2], 16);
-    b = parseInt(hex[3] + hex[3], 16);
-  } else if (hex.length === 7) {
-    r = parseInt(hex.substring(1, 3), 16);
-    g = parseInt(hex.substring(3, 5), 16);
-    b = parseInt(hex.substring(5, 7), 16);
-  }
-  r /= 255; g /= 255; b /= 255;
-  let max = Math.max(r, g, b), min = Math.min(r, g, b);
-  let h, s, l = (max + min) / 2;
-  if (max === min) {
-    h = s = 0; 
-  } else {
-    let d = max - min;
-    s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
-    switch (max) {
-      case r: h = (g - b) / d + (g < b ? 6 : 0); break;
-      case g: h = (b - r) / d + 2; break;
-      case b: h = (r - g) / d + 4; break;
+/**
+ * Pastime - Theme Engine & UI Controller
+ */
+
+// Math utilities for color conversion
+const ColorMath = {
+  hexToHSL(hex) {
+    let r = 0, g = 0, b = 0;
+    if (hex.length === 4) {
+      r = parseInt(hex[1] + hex[1], 16);
+      g = parseInt(hex[2] + hex[2], 16);
+      b = parseInt(hex[3] + hex[3], 16);
+    } else if (hex.length === 7) {
+      r = parseInt(hex.substring(1, 3), 16);
+      g = parseInt(hex.substring(3, 5), 16);
+      b = parseInt(hex.substring(5, 7), 16);
     }
-    h /= 6;
-  }
-  return { h: h * 360, s: s * 100, l: l * 100 };
-}
-
-function hslToHex(h, s, l) {
-  l /= 100;
-  const a = s * Math.min(l, 1 - l) / 100;
-  const f = n => {
-    const k = (n + h / 30) % 12;
-    const color = l - a * Math.max(Math.min(k - 3, 9 - k, 1), -1);
-    return Math.round(255 * color).toString(16).padStart(2, '0');
-  };
-  return `#${f(0)}${f(8)}${f(4)}`;
-}
-
-function generateColorScales(hex) {
-  const hsl = hexToHSL(hex);
-  
-  const lightBg = '#ebedf0';
-  const lightColors = [
-    lightBg,
-    hslToHex(hsl.h, hsl.s, Math.max(hsl.l, 80)),
-    hslToHex(hsl.h, hsl.s, Math.max(hsl.l - 10, 65)),
-    hslToHex(hsl.h, hsl.s, Math.max(hsl.l - 20, 50)),
-    hslToHex(hsl.h, hsl.s, Math.max(hsl.l - 35, 35)),
-  ];
-
-  const darkBg = '#161b22';
-  const darkColors = [
-    darkBg,
-    hslToHex(hsl.h, hsl.s, Math.min(hsl.l - 20, 20)),
-    hslToHex(hsl.h, hsl.s, Math.min(hsl.l, 35)),
-    hslToHex(hsl.h, hsl.s, Math.min(hsl.l + 15, 50)),
-    hslToHex(hsl.h, hsl.s, Math.min(hsl.l + 30, 65)),
-  ];
-
-  return { lightColors, darkColors };
-}
-
-document.addEventListener('DOMContentLoaded', () => {
-  const cellSize = 10;
-  const cellGap = 4;
-  const paddingX = 30;
-  const paddingY = 20;
-  const width = 53 * (cellSize + cellGap) + paddingX + 10;
-  const height = 7 * (cellSize + cellGap) + paddingY + 10;
-
-  const svgContainer = document.getElementById('svgContainer');
-  const exportActionCode = document.getElementById('exportActionCode');
-  const exportProfileCode = document.getElementById('exportProfileCode');
-  const colorPicker = document.getElementById('primaryColor');
-  const usernameInput = document.getElementById('usernameInput');
-
-  colorPicker.addEventListener('input', render);
-  usernameInput.addEventListener('input', renderProfileCode);
-
-  const fakeWeeks = [];
-  for (let i = 0; i < 53; i++) {
-    const days = [];
-    for (let j = 0; j < 7; j++) {
-      let level = 0;
-      const rand = Math.random();
-      if (rand > 0.6) level = 1;
-      if (rand > 0.8) level = 2;
-      if (rand > 0.9) level = 3;
-      if (rand > 0.95) level = 4;
-      days.push({ level });
+    r /= 255; g /= 255; b /= 255;
+    const max = Math.max(r, g, b), min = Math.min(r, g, b);
+    let h, s, l = (max + min) / 2;
+    if (max === min) {
+      h = s = 0; 
+    } else {
+      const d = max - min;
+      s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+      switch (max) {
+        case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+        case g: h = (b - r) / d + 2; break;
+        case b: h = (r - g) / d + 4; break;
+      }
+      h /= 6;
     }
-    fakeWeeks.push({ contributionDays: days });
+    return { h: h * 360, s: s * 100, l: l * 100, r: Math.round(r*255), g: Math.round(g*255), b: Math.round(b*255) };
+  },
+
+  hslToHex(h, s, l) {
+    l /= 100;
+    const a = s * Math.min(l, 1 - l) / 100;
+    const f = n => {
+      const k = (n + h / 30) % 12;
+      const color = l - a * Math.max(Math.min(k - 3, 9 - k, 1), -1);
+      return Math.round(255 * color).toString(16).padStart(2, '0');
+    };
+    return `#${f(0)}${f(8)}${f(4)}`;
+  },
+
+  generateScales(hex) {
+    const hsl = this.hexToHSL(hex);
+    
+    // Light Theme Quartiles (0 -> 4)
+    const lightBg = '#ebedf0';
+    const lightColors = [
+      lightBg,
+      this.hslToHex(hsl.h, hsl.s, Math.max(hsl.l, 80)),
+      this.hslToHex(hsl.h, hsl.s, Math.max(hsl.l - 10, 65)),
+      this.hslToHex(hsl.h, hsl.s, Math.max(hsl.l - 20, 50)),
+      this.hslToHex(hsl.h, hsl.s, Math.max(hsl.l - 35, 35)),
+    ];
+
+    // Dark Theme Quartiles (0 -> 4)
+    const darkBg = '#161b22';
+    const darkColors = [
+      darkBg,
+      this.hslToHex(hsl.h, hsl.s, Math.min(hsl.l - 20, 20)),
+      this.hslToHex(hsl.h, hsl.s, Math.min(hsl.l, 35)),
+      this.hslToHex(hsl.h, hsl.s, Math.min(hsl.l + 15, 50)),
+      this.hslToHex(hsl.h, hsl.s, Math.min(hsl.l + 30, 65)),
+    ];
+
+    return { lightColors, darkColors, rawHSL: hsl };
+  }
+};
+
+// UI and DOM Management
+class UIManager {
+  constructor() {
+    this.colorPicker = document.getElementById('primaryColor');
+    this.usernameInput = document.getElementById('usernameInput');
+    this.svgContainer = document.getElementById('svgContainer');
+    this.exportActionCode = document.getElementById('exportActionCode');
+    this.exportProfileCode = document.getElementById('exportProfileCode');
+    this.toastContainer = document.getElementById('toast-container');
+    
+    this.fakeData = this.generateFakeData();
+    this.init();
   }
 
-  function renderProfileCode() {
-    const username = usernameInput.value.trim() || 'your-username';
-    exportProfileCode.textContent = `![My Custom Activity Graph](https://raw.githubusercontent.com/${username}/Pastime/main/activity-graph.svg)`;
+  init() {
+    this.colorPicker.addEventListener('input', () => this.renderAll());
+    this.usernameInput.addEventListener('input', () => this.renderProfileCode());
+    
+    this.setupCopyButton('copyActionBtn', this.exportActionCode, 'Workflow YAML Copied!');
+    this.setupCopyButton('copyProfileBtn', this.exportProfileCode, 'Markdown Link Copied!');
+    
+    // Initial Render
+    this.renderAll();
   }
 
-  function render() {
-    let hex = colorPicker.value;
+  generateFakeData() {
+    const fakeWeeks = [];
+    for (let i = 0; i < 53; i++) {
+      const days = [];
+      for (let j = 0; j < 7; j++) {
+        let level = 0;
+        const rand = Math.random();
+        // Skew towards lower levels for realism
+        if (rand > 0.6) level = 1;
+        if (rand > 0.8) level = 2;
+        if (rand > 0.9) level = 3;
+        if (rand > 0.95) level = 4;
+        days.push({ level });
+      }
+      fakeWeeks.push({ contributionDays: days });
+    }
+    return fakeWeeks;
+  }
+
+  updateCSSVariables(hex, r, g, b) {
+    document.documentElement.style.setProperty('--brand', hex);
+    document.documentElement.style.setProperty('--brand-rgb', `${r}, ${g}, ${b}`);
+  }
+
+  showToast(message) {
+    const toast = document.createElement('div');
+    toast.className = 'toast';
+    toast.innerHTML = `
+      <svg class="w-5 h-5 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+      ${message}
+    `;
+    this.toastContainer.appendChild(toast);
+    
+    setTimeout(() => {
+      toast.classList.add('hide');
+      setTimeout(() => toast.remove(), 300);
+    }, 3000);
+  }
+
+  setupCopyButton(btnId, targetElement, successMsg) {
+    document.getElementById(btnId).addEventListener('click', () => {
+      navigator.clipboard.writeText(targetElement.textContent);
+      this.showToast(successMsg);
+    });
+  }
+
+  renderProfileCode() {
+    const username = this.usernameInput.value.trim() || 'your-username';
+    this.exportProfileCode.textContent = `![My Custom Activity Graph](https://raw.githubusercontent.com/${username}/Pastime/main/activity-graph.svg)`;
+  }
+
+  renderAll() {
+    let hex = this.colorPicker.value;
     if (!hex) hex = '#fbbf24';
-    const { lightColors, darkColors } = generateColorScales(hex);
+    
+    const { lightColors, darkColors, rawHSL } = ColorMath.generateScales(hex);
+    this.updateCSSVariables(hex, rawHSL.r, rawHSL.g, rawHSL.b);
+
+    this.renderSVG(lightColors, darkColors);
+    
+    this.exportActionCode.textContent = 
+`env:
+  GITHUB_TOKEN: \${{ secrets.GH_TOKEN_FOR_GRAPH }}
+  GITHUB_USERNAME: \${{ github.repository_owner }}
+  LIGHT_THEME: '${lightColors.join(',')}'
+  DARK_THEME: '${darkColors.join(',')}'`;
+
+    this.renderProfileCode();
+  }
+
+  renderSVG(lightColors, darkColors) {
+    const cellSize = 11;
+    const cellGap = 4;
+    const paddingX = 30;
+    const paddingY = 20;
+    const width = 53 * (cellSize + cellGap) + paddingX + 10;
+    const height = 7 * (cellSize + cellGap) + paddingY + 10;
 
     let rects = '';
-    fakeWeeks.forEach((week, weekIndex) => {
+    this.fakeData.forEach((week, weekIndex) => {
       const x = weekIndex * (cellSize + cellGap);
       week.contributionDays.forEach((day, dayOfWeek) => {
         const y = dayOfWeek * (cellSize + cellGap);
@@ -116,7 +186,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
     let monthLabels = '';
     for(let i=0; i<12; i++) {
-      monthLabels += `<text class="label" x="${i*60}" y="-8">${months[i]}</text>\n`;
+      monthLabels += `<text class="label" x="${i*64}" y="-8">${months[i]}</text>\n`;
     }
 
     const dayLabels = `
@@ -127,7 +197,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${width} ${height}" width="${width}" height="${height}">\n`;
     svg += `<style>\n`;
-    svg += `  .day { rx: 2; ry: 2; shape-rendering: geometricPrecision; }\n`;
+    svg += `  .day { rx: 3; ry: 3; shape-rendering: geometricPrecision; transition: fill 0.3s ease; }\n`;
     svg += `  .label { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; font-size: 10px; fill: #57606a; }\n`;
     
     svg += `  .level-0 { fill: ${lightColors[0]}; }\n`;
@@ -153,30 +223,11 @@ document.addEventListener('DOMContentLoaded', () => {
     svg += `</g>\n`;
     svg += `</svg>`;
 
-    svgContainer.innerHTML = svg;
-
-    exportActionCode.textContent = 
-`env:
-  GITHUB_TOKEN: \${{ secrets.GH_TOKEN_FOR_GRAPH }}
-  GITHUB_USERNAME: \${{ github.repository_owner }}
-  LIGHT_THEME: '${lightColors.join(',')}'
-  DARK_THEME: '${darkColors.join(',')}'`;
-
-    renderProfileCode();
+    this.svgContainer.innerHTML = svg;
   }
+}
 
-  function handleCopy(btnId, targetElementId) {
-    document.getElementById(btnId).addEventListener('click', (e) => {
-      navigator.clipboard.writeText(document.getElementById(targetElementId).textContent);
-      const btn = e.target;
-      const originalText = btn.textContent;
-      btn.textContent = 'Copied!';
-      setTimeout(() => { btn.textContent = originalText; }, 2000);
-    });
-  }
-
-  handleCopy('copyActionBtn', 'exportActionCode');
-  handleCopy('copyProfileBtn', 'exportProfileCode');
-
-  render();
+// Bootstrap application
+document.addEventListener('DOMContentLoaded', () => {
+  new UIManager();
 });
