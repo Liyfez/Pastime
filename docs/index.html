@@ -127,13 +127,46 @@
 
       <!-- Color Picker Section -->
       <section class="bg-cardDark rounded-3xl p-8 shadow-xl border border-zinc-800" aria-labelledby="step1-title">
-        <div class="max-w-md mx-auto text-center">
-          <h2 id="step1-title" class="text-xl font-medium mb-6 text-textBright"><span class="text-brandYellow font-bold">Step 1:</span> Choose Your Theme Color</h2>
-          <div class="relative group">
-            <label for="primaryColor" class="sr-only">Choose a primary theme color</label>
-            <input type="color" id="primaryColor" name="primaryColor" value="#fbbf24" class="shadow-inner transition-transform group-hover:scale-[1.02] active:scale-95 duration-200 focus:outline-none focus:ring-2 focus:ring-brandYellow focus:ring-offset-2 focus:ring-offset-bgDark">
+        <div class="max-w-2xl mx-auto text-center">
+          <h2 id="step1-title" class="text-xl font-medium mb-6 text-textBright"><span class="text-brandYellow font-bold">Step 1:</span> Design Your Theme</h2>
+          
+          <!-- Theme Mode Toggle -->
+          <div class="flex justify-center gap-4 mb-8">
+            <button id="modeSolidBtn" class="px-6 py-2 rounded-full font-medium transition-all bg-brandYellow text-bgDark focus:outline-none focus:ring-2 focus:ring-brandYellow focus:ring-offset-2 focus:ring-offset-cardDark" aria-pressed="true">Solid Theme</button>
+            <button id="modeGradientBtn" class="px-6 py-2 rounded-full font-medium transition-all bg-zinc-800 text-textSoft hover:text-textBright border border-zinc-700 focus:outline-none focus:ring-2 focus:ring-brandYellow focus:ring-offset-2 focus:ring-offset-cardDark" aria-pressed="false">Gradient Theme</button>
           </div>
-          <p class="text-sm text-textSoft mt-4">We'll calculate 4 precise intensity levels for your heat map.</p>
+
+          <!-- Solid Mode Controls -->
+          <div id="solidControls" class="transition-opacity duration-300">
+            <label for="primaryColor" class="sr-only">Choose a primary theme color</label>
+            <input type="color" id="primaryColor" name="primaryColor" value="#fbbf24" class="max-w-md mx-auto shadow-inner transition-transform hover:scale-[1.02] active:scale-95 duration-200 focus:outline-none focus:ring-2 focus:ring-brandYellow focus:ring-offset-2 focus:ring-offset-bgDark">
+            <p class="text-sm text-textSoft mt-4">We'll calculate 4 precise intensity levels for your heat map.</p>
+          </div>
+
+          <!-- Gradient Mode Controls -->
+          <div id="gradientControls" class="hidden transition-opacity duration-300">
+            <div class="grid md:grid-cols-2 gap-6 items-center">
+              <div>
+                <label for="gradStartColor" class="block text-sm font-medium text-textSoft mb-2 text-left">Start Color</label>
+                <input type="color" id="gradStartColor" name="gradStartColor" value="#fbbf24" class="shadow-inner transition-transform hover:scale-[1.02] active:scale-95 duration-200 focus:outline-none focus:ring-2 focus:ring-brandYellow focus:ring-offset-2 focus:ring-offset-bgDark">
+              </div>
+              <div>
+                <label for="gradEndColor" class="block text-sm font-medium text-textSoft mb-2 text-left">End Color</label>
+                <input type="color" id="gradEndColor" name="gradEndColor" value="#34d399" class="shadow-inner transition-transform hover:scale-[1.02] active:scale-95 duration-200 focus:outline-none focus:ring-2 focus:ring-brandYellow focus:ring-offset-2 focus:ring-offset-bgDark">
+              </div>
+            </div>
+            
+            <div class="mt-6">
+              <label for="gradDirection" class="block text-sm font-medium text-textSoft mb-2 text-left">Direction</label>
+              <select id="gradDirection" class="w-full bg-bgDark border border-zinc-700 text-textBright rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-brandYellow focus:border-brandYellow transition-colors">
+                <option value="left-to-right">Left to Right</option>
+                <option value="top-to-bottom">Top to Bottom</option>
+                <option value="top-left-to-bottom-right">Top-Left to Bottom-Right</option>
+                <option value="bottom-left-to-top-right">Bottom-Left to Top-Right</option>
+              </select>
+            </div>
+            <p class="text-sm text-textSoft mt-4">Activity intensity is mathematically mapped to gradient opacity!</p>
+          </div>
         </div>
       </section>
 

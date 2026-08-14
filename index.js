@@ -125,13 +125,22 @@ async function main() {
     process.exit(1);
   }
 
+  const themeConfig = {
+    mode: process.env.THEME_MODE || 'solid',
+    start: process.env.GRADIENT_START,
+    end: process.env.GRADIENT_END,
+    dir: process.env.GRADIENT_DIR,
+    lightBg: process.env.BG_EMPTY_LIGHT,
+    darkBg: process.env.BG_EMPTY_DARK
+  };
+
   console.log(`Fetching true contribution data for ${GITHUB_USERNAME} (Current Year)...`);
   try {
     const weeks = await fetchContributionsFromGraphQL(GITHUB_USERNAME, GITHUB_TOKEN);
     console.log(`Successfully fetched data for ${weeks.length} weeks.`);
 
     console.log(`Generating adaptive SVG with custom themes...`);
-    const svg = generateSVG(weeks, lightColors, darkColors);
+    const svg = generateSVG(weeks, lightColors, darkColors, themeConfig);
 
     const outputPath = path.join(__dirname, 'activity-graph.svg');
     fs.writeFileSync(outputPath, svg);
