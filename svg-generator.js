@@ -50,19 +50,40 @@ export function generateSVG(weeks, lightColors, darkColors, themeConfig = {}) {
   let svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${width} ${height}" width="${width}" height="${height}">\n`;
   
   // Define gradients if in gradient mode
-  const isGradient = themeConfig.mode === 'gradient';
-  if (isGradient) {
-    const start = themeConfig.start || '#fbbf24';
-    const end = themeConfig.end || '#34d399';
-    const x1 = themeConfig.x1 || '0%';
-    const y1 = themeConfig.y1 || '0%';
-    const x2 = themeConfig.x2 || '100%';
-    const y2 = themeConfig.y2 || '100%';
+  if (themeConfig.mode === 'gradient' || themeConfig.mode === 'custom') {
+    let x1 = themeConfig.x1 || '0%';
+    let y1 = themeConfig.y1 || '0%';
+    let x2 = themeConfig.x2 || '100%';
+    let y2 = themeConfig.y2 || '100%';
+    
+    // For simple gradient mode, parse direction if x1/y1 aren't strictly passed
+    if (themeConfig.mode === 'gradient' && themeConfig.dir) {
+      switch (themeConfig.dir) {
+        case 'left-to-right': x2 = '100%'; y2 = '0%'; break;
+        case 'top-to-bottom': x2 = '0%'; y2 = '100%'; break;
+        case 'top-left-to-bottom-right': x2 = '100%'; y2 = '100%'; break;
+        case 'bottom-left-to-top-right': y1 = '100%'; x2 = '100%'; y2 = '0%'; break;
+      }
+    }
 
     svg += `  <defs>\n`;
     svg += `    <linearGradient id="heatmap-grad" gradientUnits="userSpaceOnUse" x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}">\n`;
-    svg += `      <stop offset="0%" stop-color="${start}" />\n`;
-    svg += `      <stop offset="100%" stop-color="${end}" />\n`;
+    
+    if (themeConfig.stops) {
+      // Parse custom stops e.g. "#ff0000:0%,#00ff00:50%"
+      const stopsArray = themeConfig.stops.split(',');
+      for (const stop of stopsArray) {
+        const [color, offset] = stop.split(':');
+        if (color && offset) {
+          svg += `      <stop offset="${offset.trim()}" stop-color="${color.trim()}" />\n`;
+        }
+      }
+    } else {
+      const start = themeConfig.start || '#fbbf24';
+      const end = themeConfig.end || '#34d399';
+      svg += `      <stop offset="0%" stop-color="${start}" />\n`;
+      svg += `      <stop offset="100%" stop-color="${end}" />\n`;
+    }
     svg += `    </linearGradient>\n`;
     svg += `  </defs>\n`;
   }
@@ -71,7 +92,7 @@ export function generateSVG(weeks, lightColors, darkColors, themeConfig = {}) {
   svg += `    .day { rx: 2; ry: 2; shape-rendering: geometricPrecision; }\n`;
   svg += `    .label { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; font-size: 10px; fill: #768390; }\n`;
   
-  if (isGradient) {
+  if (themeConfig.mode === 'gradient' || themeConfig.mode === 'custom') {
     // Gradient Mode CSS
     const lightBg = themeConfig.lightBg || '#ebedf0';
     const darkBg = themeConfig.darkBg || '#161b22';
