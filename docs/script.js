@@ -209,7 +209,7 @@
         gradientOverlay.innerHTML = '';
         gradientStops.forEach((stop, index) => {
           const thumb = document.createElement('div');
-          thumb.className = `absolute -translate-y-1/2 -translate-x-1/2 w-8 h-8 rounded-full border-[3px] cursor-grab shadow-[0_2px_10px_rgba(0,0,0,0.5)] transition-transform hover:scale-110 active:cursor-grabbing flex items-center justify-center pointer-events-auto`;
+          thumb.className = `grad-thumb`;
           
           thumb.addEventListener('mousedown', (e) => {
             e.preventDefault();
@@ -241,39 +241,37 @@
         thumb.style.backgroundColor = stop.color;
 
         if (index === activeNodeIndex) {
-          thumb.classList.add('border-brandYellow', 'scale-110', 'z-30');
-          thumb.classList.remove('border-white', 'z-20');
+          thumb.classList.add('is-active');
         } else {
-          thumb.classList.remove('border-brandYellow', 'scale-110', 'z-30');
-          thumb.classList.add('border-white', 'z-20');
+          thumb.classList.remove('is-active');
         }
       });
     }
 
     function updateNodeEditor() {
       if (activeNodeIndex >= 0 && activeNodeIndex < gradientStops.length) {
-        nodeEditor.classList.remove('opacity-50', 'pointer-events-none');
+        nodeEditor.classList.remove('is-disabled');
         activeNodeColor.value = gradientStops[activeNodeIndex].color;
         
         // Disable remove button if only 2 nodes left
         if (gradientStops.length <= 2) {
           removeNodeBtn.disabled = true;
-          removeNodeBtn.classList.add('opacity-50', 'cursor-not-allowed');
+          removeNodeBtn.classList.add('is-disabled');
         } else {
           removeNodeBtn.disabled = false;
-          removeNodeBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+          removeNodeBtn.classList.remove('is-disabled');
         }
 
         // Disable add button if max 4 nodes
         if (gradientStops.length >= 4) {
           addGradientNodeBtn.disabled = true;
-          addGradientNodeBtn.classList.add('opacity-50', 'cursor-not-allowed');
+          addGradientNodeBtn.classList.add('is-disabled');
         } else {
           addGradientNodeBtn.disabled = false;
-          addGradientNodeBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+          addGradientNodeBtn.classList.remove('is-disabled');
         }
       } else {
-        nodeEditor.classList.add('opacity-50', 'pointer-events-none');
+        nodeEditor.classList.add('is-disabled');
       }
     }
 
@@ -344,29 +342,25 @@
     function setMode(mode) {
       currentMode = mode;
       if (mode === 'solid') {
-        modeSolidBtn.classList.replace('bg-zinc-800', 'bg-brandYellow');
-        modeSolidBtn.classList.replace('text-textSoft', 'text-bgDark');
-        modeSolidBtn.classList.remove('border', 'border-zinc-700');
+        modeSolidBtn.classList.add('btn-primary');
+        modeSolidBtn.classList.remove('btn-secondary');
         
-        modeGradientBtn.classList.replace('bg-brandYellow', 'bg-zinc-800');
-        modeGradientBtn.classList.replace('text-bgDark', 'text-textSoft');
-        modeGradientBtn.classList.add('border', 'border-zinc-700');
+        modeGradientBtn.classList.add('btn-secondary');
+        modeGradientBtn.classList.remove('btn-primary');
 
-        solidControls.classList.remove('hidden');
-        gradientControls.classList.add('hidden');
-        if (gradientOverlay) gradientOverlay.classList.add('hidden');
+        solidControls.classList.remove('is-hidden');
+        gradientControls.classList.add('is-hidden');
+        if (gradientOverlay) gradientOverlay.classList.add('is-hidden');
       } else {
-        modeGradientBtn.classList.replace('bg-zinc-800', 'bg-brandYellow');
-        modeGradientBtn.classList.replace('text-textSoft', 'text-bgDark');
-        modeGradientBtn.classList.remove('border', 'border-zinc-700');
+        modeGradientBtn.classList.add('btn-primary');
+        modeGradientBtn.classList.remove('btn-secondary');
         
-        modeSolidBtn.classList.replace('bg-brandYellow', 'bg-zinc-800');
-        modeSolidBtn.classList.replace('text-bgDark', 'text-textSoft');
-        modeSolidBtn.classList.add('border', 'border-zinc-700');
+        modeSolidBtn.classList.add('btn-secondary');
+        modeSolidBtn.classList.remove('btn-primary');
 
-        gradientControls.classList.remove('hidden');
-        solidControls.classList.add('hidden');
-        if (gradientOverlay) gradientOverlay.classList.remove('hidden');
+        gradientControls.classList.remove('is-hidden');
+        solidControls.classList.add('is-hidden');
+        if (gradientOverlay) gradientOverlay.classList.remove('is-hidden');
         
         updateNodeEditor();
         renderGradientNodesUI();
@@ -513,13 +507,11 @@
           await navigator.clipboard.writeText(target.textContent);
           const originalText = button.textContent;
           button.textContent = 'Copied!';
-          button.classList.add('bg-green-500', 'text-white', 'border-green-500');
-          button.classList.remove('text-brandYellow', 'bg-zinc-800');
+          button.classList.add('btn-success');
           
           setTimeout(() => {
             button.textContent = originalText;
-            button.classList.remove('bg-green-500', 'text-white', 'border-green-500');
-            button.classList.add('text-brandYellow', 'bg-zinc-800');
+            button.classList.remove('btn-success');
           }, 2000);
         } catch (err) {
           console.error('Failed to copy text: ', err);
