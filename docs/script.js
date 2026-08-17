@@ -95,6 +95,10 @@
     const solidControls = document.getElementById('solidControls');
     const gradientControls = document.getElementById('gradientControls');
 
+    // Language Selector Elements
+    const langSelect = document.getElementById('langSelect');
+    const availableLangs = ['en', 'zh', 'es', 'tr', 'kk', 'ja', 'ko'];
+
     // Control Inputs
     const colorPicker = document.getElementById('primaryColor');
     const gradDirection = document.getElementById('gradDirection');
@@ -494,6 +498,67 @@
     }
 
     /**
+     * Language Management (i18n)
+     */
+    function getInitialLanguage() {
+      const saved = localStorage.getItem('pastime_lang');
+      if (saved && availableLangs.includes(saved)) return saved;
+      
+      const browserLang = (navigator.language || navigator.userLanguage || 'en').toLowerCase();
+      const matched = availableLangs.find(lang => browserLang.startsWith(lang));
+      return matched || 'en';
+    }
+
+    let currentLang = getInitialLanguage();
+
+    function applyLanguage(lang) {
+      if (!window.TRANSLATIONS || !TRANSLATIONS[lang]) return;
+      currentLang = lang;
+      document.documentElement.lang = lang;
+      
+      if (langSelect) {
+        langSelect.value = lang;
+      }
+
+      const dict = TRANSLATIONS[lang];
+
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (dict[key]) {
+          el.textContent = dict[key];
+        }
+      });
+
+      document.querySelectorAll('[data-i18n-html]').forEach(el => {
+        const key = el.getAttribute('data-i18n-html');
+        if (dict[key]) {
+          el.innerHTML = dict[key];
+        }
+      });
+
+      document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+        const key = el.getAttribute('data-i18n-placeholder');
+        if (dict[key]) {
+          el.placeholder = dict[key];
+        }
+      });
+
+      const metaDesc = document.getElementById('metaDescription');
+      if (metaDesc && dict.meta_desc) {
+        metaDesc.setAttribute('content', dict.meta_desc);
+      }
+    }
+
+    if (langSelect) {
+      langSelect.value = currentLang;
+      langSelect.addEventListener('change', (e) => {
+        const selected = e.target.value;
+        localStorage.setItem('pastime_lang', selected);
+        applyLanguage(selected);
+      });
+    }
+
+    /**
      * Attaches robust copy-to-clipboard functionality to a button
      */
     function attachClipboardHandler(buttonId, targetId) {
@@ -502,20 +567,26 @@
       
       if (!button || !target) return;
 
-      button.addEventListener('click', async (e) => {
+      button.addEventListener('click', async () => {
         try {
           await navigator.clipboard.writeText(target.textContent);
-          const originalText = button.textContent;
-          button.textContent = 'Copied!';
+          const i18nKey = button.getAttribute('data-i18n');
+          const dict = (window.TRANSLATIONS && TRANSLATIONS[currentLang]) ? TRANSLATIONS[currentLang] : null;
+          button.textContent = dict?.btn_copied || 'Copied!';
           button.classList.add('btn-success');
           
           setTimeout(() => {
-            button.textContent = originalText;
+            if (i18nKey && dict && dict[i18nKey]) {
+              button.textContent = dict[i18nKey];
+            } else {
+              button.textContent = i18nKey === 'copy_action_btn' ? 'Copy Workflow YAML' : 'Copy Markdown Link';
+            }
             button.classList.remove('btn-success');
           }, 2000);
         } catch (err) {
           console.error('Failed to copy text: ', err);
-          button.textContent = 'Failed';
+          const dict = (window.TRANSLATIONS && TRANSLATIONS[currentLang]) ? TRANSLATIONS[currentLang] : null;
+          button.textContent = dict?.btn_failed || 'Failed';
         }
       });
     }
@@ -524,6 +595,7 @@
     attachClipboardHandler('copyProfileBtn', 'exportProfileCode');
 
     // Initial render
+    applyLanguage(currentLang);
     setMode('solid');
   });
 })();

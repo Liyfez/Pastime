@@ -3,26 +3,46 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Pastime - The Ultimate GitHub Activity Graph Customizer created by Liyfez.">
-  <title>Pastime - By Liyfez</title>
+  <meta name="description" id="metaDescription" content="Pastime - The Ultimate GitHub Activity Graph Customizer created by Liyfez.">
+  <title id="pageTitle">Pastime - By Liyfez</title>
   
-  <link rel="stylesheet" href="styles.css?v=2">
+  <link rel="stylesheet" href="styles.css?v=6">
 </head>
 <body>
   
-  <!-- Navigation / Creator Badge -->
-  <a href="https://github.com/Liyfez" target="_blank" rel="noopener noreferrer" class="creator-badge" aria-label="Creator Information">
-    <svg fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-      <path fill-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clip-rule="evenodd" />
-    </svg>
-    <span>Liyfez</span>
-  </a>
+  <!-- Navigation / Top Right Actions -->
+  <nav class="top-nav-actions" aria-label="Navigation Actions">
+    <div class="lang-selector-wrapper">
+      <svg class="lang-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"></path>
+      </svg>
+      <select id="langSelect" class="lang-select" aria-label="Select Language">
+        <option value="en">English (EN)</option>
+        <option value="zh">中文 (ZH)</option>
+        <option value="es">Español (ES)</option>
+        <option value="tr">Türkçe (TR)</option>
+        <option value="kk">Қазақша (KK)</option>
+        <option value="ja">日本語 (JA)</option>
+        <option value="ko">한국어 (KO)</option>
+      </select>
+      <svg class="lang-arrow" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+      </svg>
+    </div>
+
+    <a href="https://github.com/Liyfez" target="_blank" rel="noopener noreferrer" class="creator-badge" aria-label="Creator Information">
+      <svg fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+        <path fill-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clip-rule="evenodd" />
+      </svg>
+      <span>Liyfez</span>
+    </a>
+  </nav>
 
   <div class="container">
     
     <header class="header">
-      <h1>Pastime</h1>
-      <p>
+      <h1 data-i18n="header_title">Pastime</h1>
+      <p data-i18n="header_subtitle">
         Craft your perfect GitHub Activity Graph. Pick a single color and we'll automatically generate a beautifully scaled theme for both Light and Dark modes.
       </p>
     </header>
@@ -31,26 +51,26 @@
       
       <!-- Detailed Guide Section -->
       <article class="card" aria-labelledby="guide-title">
-        <h2 id="guide-title">
+        <h2 id="guide-title" data-i18n="guide_title">
           Detailed Setup Guide
         </h2>
         <div class="grid-2">
           <section>
-            <h3>Prerequisites: Fork & Token</h3>
+            <h3 data-i18n="guide_prereq_title">Prerequisites: Fork & Token</h3>
             <ol class="guide-list">
-              <li><strong>Fork</strong> the <a href="https://github.com/Liyfez/Pastime" target="_blank" rel="noopener noreferrer">Pastime repository</a> to your own account.</li>
-              <li>Go to GitHub Settings > Developer Settings and generate a <strong>Personal Access Token (PAT)</strong> with <code>read:user</code> and <code>repo</code> permissions.</li>
-              <li>In your forked repo, go to Settings > Secrets and variables > Actions. Add a secret named <code>GH_TOKEN_FOR_GRAPH</code> and paste your token.</li>
-              <li>Go to Settings > Actions > General in your repo, and ensure <strong>Read and write permissions</strong> are enabled.</li>
+              <li data-i18n-html="guide_prereq_1"><strong>Fork</strong> the <a href="https://github.com/Liyfez/Pastime" target="_blank" rel="noopener noreferrer">Pastime repository</a> to your own account.</li>
+              <li data-i18n-html="guide_prereq_2">Go to GitHub Settings > Developer Settings and generate a <strong>Personal Access Token (PAT)</strong> with <code>read:user</code> and <code>repo</code> permissions.</li>
+              <li data-i18n-html="guide_prereq_3">In your forked repo, go to Settings > Secrets and variables > Actions. Add a secret named <code>GH_TOKEN_FOR_GRAPH</code> and paste your token.</li>
+              <li data-i18n-html="guide_prereq_4">Go to Settings > Actions > General in your repo, and ensure <strong>Read and write permissions</strong> are enabled.</li>
             </ol>
           </section>
           <section>
-            <h3>How to use this site</h3>
+            <h3 data-i18n="guide_how_title">How to use this site</h3>
             <ul class="guide-list guide-list-disc">
-              <li>Use <strong>Step 1</strong> below to design your perfect color theme.</li>
-              <li>Use <strong>Step 2</strong> to copy the configuration code. Paste it exactly into the <code>.github/workflows/update-graph.yml</code> file in your forked repo.</li>
-              <li>Run the GitHub action manually to generate your image.</li>
-              <li>Use <strong>Step 3</strong> to generate the Markdown code. Paste that into your main Profile README!</li>
+              <li data-i18n-html="guide_how_1">Use <strong>Step 1</strong> below to design your perfect color theme.</li>
+              <li data-i18n-html="guide_how_2">Use <strong>Step 2</strong> to copy the configuration code. Paste it exactly into the <code>.github/workflows/update-graph.yml</code> file in your forked repo.</li>
+              <li data-i18n-html="guide_how_3">Run the GitHub action manually to generate your image.</li>
+              <li data-i18n-html="guide_how_4">Use <strong>Step 3</strong> to generate the Markdown code. Paste that into your main Profile README!</li>
             </ul>
           </section>
         </div>
@@ -59,12 +79,12 @@
       <!-- Color Picker Section -->
       <section class="card" aria-labelledby="step1-title">
         <div style="text-align: center; max-width: 600px; margin: 0 auto;">
-          <h2 id="step1-title">Step 1: Choose Your Mode</h2>
+          <h2 id="step1-title" data-i18n="step1_title">Step 1: Choose Your Mode</h2>
           
           <!-- Theme Mode Toggle -->
           <div class="mode-toggle">
-            <button id="modeSolidBtn" class="btn btn-primary" aria-pressed="true">Solid Theme</button>
-            <button id="modeGradientBtn" class="btn btn-secondary" aria-pressed="false">Gradient Theme</button>
+            <button id="modeSolidBtn" class="btn btn-primary" aria-pressed="true" data-i18n="mode_solid">Solid Theme</button>
+            <button id="modeGradientBtn" class="btn btn-secondary" aria-pressed="false" data-i18n="mode_gradient">Gradient Theme</button>
           </div>
         </div>
       </section>
@@ -72,23 +92,23 @@
       <!-- Live Preview Section -->
       <section class="card preview-card" aria-labelledby="preview-title">
         <header class="preview-header">
-          <h2 id="preview-title" style="margin: 0;">Interactive Studio</h2>
-          <span class="badge">Auto-Theme Enabled</span>
+          <h2 id="preview-title" style="margin: 0;" data-i18n="preview_title">Interactive Studio</h2>
+          <span class="badge" data-i18n="preview_badge">Auto-Theme Enabled</span>
         </header>
 
         <!-- Solid Mode Controls -->
         <div id="solidControls" class="color-picker-wrapper">
           <label for="primaryColor" style="display: none;">Choose a primary theme color</label>
           <input type="color" id="primaryColor" name="primaryColor" value="#fbbf24">
-          <p style="margin-top: 1rem;">We'll calculate 4 precise intensity levels based on this base color.</p>
+          <p style="margin-top: 1rem;" data-i18n="solid_desc">We'll calculate 4 precise intensity levels based on this base color.</p>
         </div>
 
         <!-- Gradient Mode Controls -->
         <div id="gradientControls" class="gradient-controls is-hidden">
           
           <div class="gradient-header">
-            <label class="gradient-title">Gradient Timeline Track</label>
-            <button id="addGradientNodeBtn" class="btn btn-primary" style="padding: 0.5rem 1rem;" aria-label="Add new gradient node">
+            <label class="gradient-title" data-i18n="gradient_track_label">Gradient Timeline Track</label>
+            <button id="addGradientNodeBtn" class="btn btn-primary" style="padding: 0.5rem 1rem;" aria-label="Add new gradient node" data-i18n="add_node_btn">
               + Add Node
             </button>
           </div>
@@ -102,11 +122,11 @@
                   <input type="color" id="activeNodeColor" aria-label="Edit Selected Node Color">
                 </div>
                 <div class="node-details">
-                  <div class="title">Active Color</div>
-                  <div class="subtitle">Edit hex or drag thumb to move</div>
+                  <div class="title" data-i18n="active_color_title">Active Color</div>
+                  <div class="subtitle" data-i18n="active_color_sub">Edit hex or drag thumb to move</div>
                 </div>
               </div>
-              <button id="removeNodeBtn" class="btn btn-danger" aria-label="Delete selected node">
+              <button id="removeNodeBtn" class="btn btn-danger" aria-label="Delete selected node" data-i18n="delete_node_btn">
                 Delete
               </button>
             </div>
@@ -114,10 +134,10 @@
             <!-- Gradient Direction -->
             <div class="select-wrapper">
               <select id="gradDirection" aria-label="Gradient Direction" class="select-input">
-                <option value="left-to-right">Vector: Left to Right</option>
-                <option value="top-to-bottom">Vector: Top to Bottom</option>
-                <option value="top-left-to-bottom-right">Vector: Top-Left to Bottom-Right</option>
-                <option value="bottom-left-to-top-right">Vector: Bottom-Left to Top-Right</option>
+                <option value="left-to-right" data-i18n="grad_vector_lr">Vector: Left to Right</option>
+                <option value="top-to-bottom" data-i18n="grad_vector_tb">Vector: Top to Bottom</option>
+                <option value="top-left-to-bottom-right" data-i18n="grad_vector_tlbr">Vector: Top-Left to Bottom-Right</option>
+                <option value="bottom-left-to-top-right" data-i18n="grad_vector_bltr">Vector: Bottom-Left to Top-Right</option>
               </select>
               <div class="select-icon">
                 <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
@@ -137,20 +157,20 @@
             </div>
           </div>
         </figure>
-        <p style="text-align: center; font-size: 0.75rem; margin-top: 1rem; color: var(--text-secondary);">Graph mathematically adapts to dark/light environments.</p>
+        <p style="text-align: center; font-size: 0.75rem; margin-top: 1rem; color: var(--text-secondary);" data-i18n="preview_note">Graph mathematically adapts to dark/light environments.</p>
       </section>
 
       <!-- Step 2: GitHub Actions Export Section -->
       <section class="card" aria-labelledby="step2-title">
         <div class="step-header">
           <header style="flex: 1;">
-            <h2 id="step2-title" style="margin: 0 0 0.5rem 0;">Step 2: Apply to GitHub Actions</h2>
+            <h2 id="step2-title" style="margin: 0 0 0.5rem 0;" data-i18n="step2_title">Step 2: Apply to GitHub Actions</h2>
             <div style="max-width: 600px;">
-              <p>Go to your forked <strong>Pastime</strong> repository on GitHub. Open the file located at <code style="color: var(--text-primary);">.github/workflows/update-graph.yml</code>.</p>
-              <p>Find the <code>env:</code> block and <strong>replace it completely</strong> with this code:</p>
+              <p data-i18n-html="step2_desc_1">Go to your forked <strong>Pastime</strong> repository on GitHub. Open the file located at <code>.github/workflows/update-graph.yml</code>.</p>
+              <p data-i18n-html="step2_desc_2">Find the <code>env:</code> block and <strong>replace it completely</strong> with this code:</p>
             </div>
           </header>
-          <button id="copyActionBtn" class="btn btn-secondary" aria-label="Copy workflow YAML">
+          <button id="copyActionBtn" class="btn btn-secondary" aria-label="Copy workflow YAML" data-i18n="copy_action_btn">
             Copy Workflow YAML
           </button>
         </div>
@@ -166,20 +186,20 @@
         
         <div class="step-header" style="position: relative; z-index: 10;">
           <header style="flex: 1;">
-            <h2 id="step3-title" style="margin: 0 0 0.5rem 0;">Step 3: Add to your Profile</h2>
+            <h2 id="step3-title" style="margin: 0 0 0.5rem 0;" data-i18n="step3_title">Step 3: Add to your Profile</h2>
             <div style="max-width: 600px;">
-              <p>Type your GitHub Username below to generate your image link.</p>
-              <p>Go to your main <strong>Profile README</strong> and paste this Markdown code exactly where you want it!</p>
+              <p data-i18n="step3_desc_1">Type your GitHub Username below to generate your image link.</p>
+              <p data-i18n-html="step3_desc_2">Go to your main <strong>Profile README</strong> and paste this Markdown code exactly where you want it!</p>
             </div>
           </header>
-          <button id="copyProfileBtn" class="btn btn-primary" aria-label="Copy markdown link">
+          <button id="copyProfileBtn" class="btn btn-primary" aria-label="Copy markdown link" data-i18n="copy_profile_btn">
             Copy Markdown Link
           </button>
         </div>
         
         <div class="input-group">
-          <label for="usernameInput" class="input-label">Username:</label>
-          <input type="text" id="usernameInput" name="usernameInput" placeholder="your-username" class="text-input">
+          <label for="usernameInput" class="input-label" data-i18n="username_label">Username:</label>
+          <input type="text" id="usernameInput" name="usernameInput" placeholder="your-username" class="text-input" data-i18n-placeholder="username_placeholder">
         </div>
         
         <div class="code-block brand-text">
@@ -192,10 +212,11 @@
   </div>
 
   <footer>
-    <p>Created with precision by Liyfez.</p>
-    <p>&copy; 2026 Liyfez. Released under the MIT License.</p>
+    <p data-i18n="footer_created">Created with precision by Liyfez.</p>
+    <p data-i18n="footer_license">&copy; 2026 Liyfez. Released under the MIT License.</p>
   </footer>
 
-  <script src="script.js?v=4"></script>
+  <script src="lang.js?v=2"></script>
+  <script src="script.js?v=6"></script>
 </body>
 </html>
