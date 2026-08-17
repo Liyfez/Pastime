@@ -324,3 +324,7 @@ window.TRANSLATIONS = {
     footer_license: "© 2026 Liyfez. MIT 라이선스에 따라 제공됩니다."
   }
 };
+
+if (typeof window.applyLanguage === 'function') {
+  window.applyLanguage(window.currentLang || 'en');
+}

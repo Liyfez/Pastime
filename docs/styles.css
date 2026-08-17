@@ -149,7 +149,7 @@ code { font-family: monospace; background: var(--bg-surface); padding: 0.2em 0.4
 }
 
 .lang-dropdown-trigger {
-  display: flex;
+  display: inline-flex;
   align-items: center;
   gap: 0.5rem;
   background: var(--bg-surface);
@@ -163,6 +163,8 @@ code { font-family: monospace; background: var(--bg-surface); padding: 0.2em 0.4
   cursor: pointer;
   outline: none;
   transition: all var(--transition-fast);
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .lang-dropdown-trigger:hover,
@@ -195,21 +197,22 @@ code { font-family: monospace; background: var(--bg-surface); padding: 0.2em 0.4
   position: absolute;
   top: calc(100% + 0.5rem);
   right: 0;
-  min-width: 190px;
-  background: rgba(20, 20, 23, 0.95);
+  min-width: 200px;
+  background: #141417;
+  background: rgba(20, 20, 23, 0.98);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(251, 191, 36, 0.2);
   border-radius: 1.25rem;
   padding: 0.5rem;
   list-style: none;
-  box-shadow: 0 15px 35px -5px rgba(0, 0, 0, 0.8), 0 0 20px rgba(251, 191, 36, 0.08);
+  box-shadow: 0 20px 40px -5px rgba(0, 0, 0, 0.9), 0 0 25px rgba(251, 191, 36, 0.12);
   opacity: 0;
   visibility: hidden;
   transform: translateY(-8px) scale(0.96);
   transition: opacity 200ms cubic-bezier(0.16, 1, 0.3, 1), transform 200ms cubic-bezier(0.16, 1, 0.3, 1), visibility 200ms;
   pointer-events: none;
-  z-index: 200;
+  z-index: 9999;
 }
 
 .lang-dropdown.is-open .lang-dropdown-menu {
@@ -223,13 +226,15 @@ code { font-family: monospace; background: var(--bg-surface); padding: 0.2em 0.4
   display: flex;
   align-items: center;
   gap: 0.625rem;
-  padding: 0.6rem 0.875rem;
+  padding: 0.65rem 0.875rem;
   border-radius: 0.75rem;
   color: var(--text-secondary);
   font-size: 0.8125rem;
   font-weight: 500;
   cursor: pointer;
   transition: all var(--transition-fast);
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .lang-option:hover {

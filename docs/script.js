@@ -511,22 +511,48 @@
     }
 
     /**
+     * Safe Storage Wrappers (to prevent SecurityError in restricted environments)
+     */
+    function safeGetStorage(key) {
+      try {
+        return localStorage.getItem(key);
+      } catch (e) {
+        return null;
+      }
+    }
+
+    function safeSetStorage(key, value) {
+      try {
+        localStorage.setItem(key, value);
+      } catch (e) {
+        // Storage not available
+      }
+    }
+
+    /**
      * Language Management (i18n)
      */
     function getInitialLanguage() {
-      const saved = localStorage.getItem('pastime_lang');
+      const saved = safeGetStorage('pastime_lang');
       if (saved && availableLangs.includes(saved)) return saved;
       
-      const browserLang = (navigator.language || navigator.userLanguage || 'en').toLowerCase();
-      const matched = availableLangs.find(lang => browserLang.startsWith(lang));
-      return matched || 'en';
+      try {
+        const browserLang = (navigator.language || navigator.userLanguage || 'en').toLowerCase();
+        const matched = availableLangs.find(lang => browserLang.startsWith(lang));
+        return matched || 'en';
+      } catch (e) {
+        return 'en';
+      }
     }
 
     let currentLang = getInitialLanguage();
+    window.currentLang = currentLang;
 
     function applyLanguage(lang) {
-      if (!window.TRANSLATIONS || !window.TRANSLATIONS[lang]) return;
+      const translations = window.TRANSLATIONS;
+      if (!translations || !translations[lang]) return;
       currentLang = lang;
+      window.currentLang = lang;
       document.documentElement.lang = lang;
 
       if (langCurrentLabel && langDisplayNames[lang]) {
@@ -539,25 +565,25 @@
         opt.setAttribute('aria-selected', isMatch ? 'true' : 'false');
       });
 
-      const dict = window.TRANSLATIONS[lang];
+      const dict = translations[lang];
 
       document.querySelectorAll('[data-i18n]').forEach(el => {
         const key = el.getAttribute('data-i18n');
-        if (dict[key]) {
+        if (dict[key] !== undefined) {
           el.textContent = dict[key];
         }
       });
 
       document.querySelectorAll('[data-i18n-html]').forEach(el => {
         const key = el.getAttribute('data-i18n-html');
-        if (dict[key]) {
+        if (dict[key] !== undefined) {
           el.innerHTML = dict[key];
         }
       });
 
       document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
         const key = el.getAttribute('data-i18n-placeholder');
-        if (dict[key]) {
+        if (dict[key] !== undefined) {
           el.placeholder = dict[key];
         }
       });
@@ -567,6 +593,8 @@
         metaDesc.setAttribute('content', dict.meta_desc);
       }
     }
+
+    window.applyLanguage = applyLanguage;
 
     if (langTrigger && langDropdown) {
       langTrigger.addEventListener('click', (e) => {
@@ -580,7 +608,7 @@
           e.stopPropagation();
           const selected = opt.getAttribute('data-value');
           if (selected) {
-            localStorage.setItem('pastime_lang', selected);
+            safeSetStorage('pastime_lang', selected);
             applyLanguage(selected);
           }
           langDropdown.classList.remove('is-open');
