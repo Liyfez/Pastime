@@ -96,8 +96,21 @@
     const gradientControls = document.getElementById('gradientControls');
 
     // Language Selector Elements
-    const langSelect = document.getElementById('langSelect');
+    const langDropdown = document.getElementById('langDropdown');
+    const langTrigger = document.getElementById('langTrigger');
+    const langCurrentLabel = document.getElementById('langCurrentLabel');
+    const langOptions = document.querySelectorAll('.lang-option');
     const availableLangs = ['en', 'zh', 'es', 'tr', 'kk', 'ja', 'ko'];
+
+    const langDisplayNames = {
+      en: 'English (EN)',
+      zh: '中文 (ZH)',
+      es: 'Español (ES)',
+      tr: 'Türkçe (TR)',
+      kk: 'Қазақша (KK)',
+      ja: '日本語 (JA)',
+      ko: '한국어 (KO)'
+    };
 
     // Control Inputs
     const colorPicker = document.getElementById('primaryColor');
@@ -512,15 +525,21 @@
     let currentLang = getInitialLanguage();
 
     function applyLanguage(lang) {
-      if (!window.TRANSLATIONS || !TRANSLATIONS[lang]) return;
+      if (!window.TRANSLATIONS || !window.TRANSLATIONS[lang]) return;
       currentLang = lang;
       document.documentElement.lang = lang;
-      
-      if (langSelect) {
-        langSelect.value = lang;
+
+      if (langCurrentLabel && langDisplayNames[lang]) {
+        langCurrentLabel.textContent = langDisplayNames[lang];
       }
 
-      const dict = TRANSLATIONS[lang];
+      langOptions.forEach(opt => {
+        const isMatch = opt.getAttribute('data-value') === lang;
+        opt.classList.toggle('is-selected', isMatch);
+        opt.setAttribute('aria-selected', isMatch ? 'true' : 'false');
+      });
+
+      const dict = window.TRANSLATIONS[lang];
 
       document.querySelectorAll('[data-i18n]').forEach(el => {
         const key = el.getAttribute('data-i18n');
@@ -549,12 +568,38 @@
       }
     }
 
-    if (langSelect) {
-      langSelect.value = currentLang;
-      langSelect.addEventListener('change', (e) => {
-        const selected = e.target.value;
-        localStorage.setItem('pastime_lang', selected);
-        applyLanguage(selected);
+    if (langTrigger && langDropdown) {
+      langTrigger.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const isOpen = langDropdown.classList.toggle('is-open');
+        langTrigger.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+      });
+
+      langOptions.forEach(opt => {
+        opt.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const selected = opt.getAttribute('data-value');
+          if (selected) {
+            localStorage.setItem('pastime_lang', selected);
+            applyLanguage(selected);
+          }
+          langDropdown.classList.remove('is-open');
+          langTrigger.setAttribute('aria-expanded', 'false');
+        });
+      });
+
+      document.addEventListener('click', (e) => {
+        if (!langDropdown.contains(e.target)) {
+          langDropdown.classList.remove('is-open');
+          langTrigger.setAttribute('aria-expanded', 'false');
+        }
+      });
+
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && langDropdown.classList.contains('is-open')) {
+          langDropdown.classList.remove('is-open');
+          langTrigger.setAttribute('aria-expanded', 'false');
+        }
       });
     }
 
@@ -571,7 +616,7 @@
         try {
           await navigator.clipboard.writeText(target.textContent);
           const i18nKey = button.getAttribute('data-i18n');
-          const dict = (window.TRANSLATIONS && TRANSLATIONS[currentLang]) ? TRANSLATIONS[currentLang] : null;
+          const dict = (window.TRANSLATIONS && window.TRANSLATIONS[currentLang]) ? window.TRANSLATIONS[currentLang] : null;
           button.textContent = dict?.btn_copied || 'Copied!';
           button.classList.add('btn-success');
           
@@ -585,7 +630,7 @@
           }, 2000);
         } catch (err) {
           console.error('Failed to copy text: ', err);
-          const dict = (window.TRANSLATIONS && TRANSLATIONS[currentLang]) ? TRANSLATIONS[currentLang] : null;
+          const dict = (window.TRANSLATIONS && window.TRANSLATIONS[currentLang]) ? window.TRANSLATIONS[currentLang] : null;
           button.textContent = dict?.btn_failed || 'Failed';
         }
       });

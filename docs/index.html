@@ -12,22 +12,75 @@
   
   <!-- Navigation / Top Right Actions -->
   <nav class="top-nav-actions" aria-label="Navigation Actions">
-    <div class="lang-selector-wrapper">
-      <svg class="lang-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"></path>
-      </svg>
-      <select id="langSelect" class="lang-select" aria-label="Select Language">
-        <option value="en">English (EN)</option>
-        <option value="zh">中文 (ZH)</option>
-        <option value="es">Español (ES)</option>
-        <option value="tr">Türkçe (TR)</option>
-        <option value="kk">Қазақша (KK)</option>
-        <option value="ja">日本語 (JA)</option>
-        <option value="ko">한국어 (KO)</option>
-      </select>
-      <svg class="lang-arrow" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-      </svg>
+    <div class="lang-dropdown" id="langDropdown">
+      <button type="button" class="lang-dropdown-trigger" id="langTrigger" aria-expanded="false" aria-haspopup="listbox" aria-label="Select Language">
+        <svg class="lang-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"></path>
+        </svg>
+        <span class="lang-current-label" id="langCurrentLabel">English (EN)</span>
+        <svg class="lang-arrow" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+        </svg>
+      </button>
+
+      <ul class="lang-dropdown-menu" id="langMenu" role="listbox" aria-label="Language options">
+        <li class="lang-option is-selected" role="option" data-value="en" aria-selected="true">
+          <span class="lang-flag">🇺🇸</span>
+          <span class="lang-name">English</span>
+          <span class="lang-code">EN</span>
+          <svg class="lang-check" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+          </svg>
+        </li>
+        <li class="lang-option" role="option" data-value="zh" aria-selected="false">
+          <span class="lang-flag">🇨🇳</span>
+          <span class="lang-name">中文</span>
+          <span class="lang-code">ZH</span>
+          <svg class="lang-check" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+          </svg>
+        </li>
+        <li class="lang-option" role="option" data-value="es" aria-selected="false">
+          <span class="lang-flag">🇪🇸</span>
+          <span class="lang-name">Español</span>
+          <span class="lang-code">ES</span>
+          <svg class="lang-check" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+          </svg>
+        </li>
+        <li class="lang-option" role="option" data-value="tr" aria-selected="false">
+          <span class="lang-flag">🇹🇷</span>
+          <span class="lang-name">Türkçe</span>
+          <span class="lang-code">TR</span>
+          <svg class="lang-check" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+          </svg>
+        </li>
+        <li class="lang-option" role="option" data-value="kk" aria-selected="false">
+          <span class="lang-flag">🇰🇿</span>
+          <span class="lang-name">Қазақша</span>
+          <span class="lang-code">KK</span>
+          <svg class="lang-check" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+          </svg>
+        </li>
+        <li class="lang-option" role="option" data-value="ja" aria-selected="false">
+          <span class="lang-flag">🇯🇵</span>
+          <span class="lang-name">日本語</span>
+          <span class="lang-code">JA</span>
+          <svg class="lang-check" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+          </svg>
+        </li>
+        <li class="lang-option" role="option" data-value="ko" aria-selected="false">
+          <span class="lang-flag">🇰🇷</span>
+          <span class="lang-name">한국어</span>
+          <span class="lang-code">KO</span>
+          <svg class="lang-check" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+          </svg>
+        </li>
+      </ul>
     </div>
 
     <a href="https://github.com/Liyfez" target="_blank" rel="noopener noreferrer" class="creator-badge" aria-label="Creator Information">

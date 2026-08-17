@@ -1,6 +1,6 @@
 "use strict";
 
-const TRANSLATIONS = {
+window.TRANSLATIONS = {
   en: {
     meta_desc: "Pastime - The Ultimate GitHub Activity Graph Customizer created by Liyfez.",
     header_title: "Pastime",
