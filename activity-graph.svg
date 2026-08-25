@@ -92,8 +92,8 @@
     <rect class="day level-1" x="42" y="28" width="10" height="10">
       <title>Level 1 on 2026-01-20</title>
     </rect>
-    <rect class="day level-1" x="42" y="42" width="10" height="10">
-      <title>Level 1 on 2026-01-21</title>
+    <rect class="day level-2" x="42" y="42" width="10" height="10">
+      <title>Level 2 on 2026-01-21</title>
     </rect>
     <rect class="day level-4" x="42" y="56" width="10" height="10">
       <title>Level 4 on 2026-01-22</title>
@@ -110,8 +110,8 @@
     <rect class="day level-3" x="56" y="14" width="10" height="10">
       <title>Level 3 on 2026-01-26</title>
     </rect>
-    <rect class="day level-1" x="56" y="28" width="10" height="10">
-      <title>Level 1 on 2026-01-27</title>
+    <rect class="day level-2" x="56" y="28" width="10" height="10">
+      <title>Level 2 on 2026-01-27</title>
     </rect>
     <rect class="day level-3" x="56" y="42" width="10" height="10">
       <title>Level 3 on 2026-01-28</title>
@@ -131,8 +131,8 @@
     <rect class="day level-1" x="70" y="14" width="10" height="10">
       <title>Level 1 on 2026-02-02</title>
     </rect>
-    <rect class="day level-1" x="70" y="28" width="10" height="10">
-      <title>Level 1 on 2026-02-03</title>
+    <rect class="day level-2" x="70" y="28" width="10" height="10">
+      <title>Level 2 on 2026-02-03</title>
     </rect>
     <rect class="day level-3" x="70" y="42" width="10" height="10">
       <title>Level 3 on 2026-02-04</title>
@@ -182,8 +182,8 @@
     <rect class="day level-4" x="98" y="56" width="10" height="10">
       <title>Level 4 on 2026-02-19</title>
     </rect>
-    <rect class="day level-1" x="98" y="70" width="10" height="10">
-      <title>Level 1 on 2026-02-20</title>
+    <rect class="day level-2" x="98" y="70" width="10" height="10">
+      <title>Level 2 on 2026-02-20</title>
     </rect>
     <rect class="day level-3" x="98" y="84" width="10" height="10">
       <title>Level 3 on 2026-02-21</title>
@@ -191,8 +191,8 @@
     <rect class="day level-1" x="112" y="0" width="10" height="10">
       <title>Level 1 on 2026-02-22</title>
     </rect>
-    <rect class="day level-1" x="112" y="14" width="10" height="10">
-      <title>Level 1 on 2026-02-23</title>
+    <rect class="day level-2" x="112" y="14" width="10" height="10">
+      <title>Level 2 on 2026-02-23</title>
     </rect>
     <rect class="day level-2" x="112" y="28" width="10" height="10">
       <title>Level 2 on 2026-02-24</title>
@@ -239,8 +239,8 @@
     <rect class="day level-4" x="140" y="28" width="10" height="10">
       <title>Level 4 on 2026-03-10</title>
     </rect>
-    <rect class="day level-1" x="140" y="42" width="10" height="10">
-      <title>Level 1 on 2026-03-11</title>
+    <rect class="day level-2" x="140" y="42" width="10" height="10">
+      <title>Level 2 on 2026-03-11</title>
     </rect>
     <rect class="day level-4" x="140" y="56" width="10" height="10">
       <title>Level 4 on 2026-03-12</title>
@@ -470,8 +470,8 @@
     <rect class="day level-4" x="294" y="28" width="10" height="10">
       <title>Level 4 on 2026-05-26</title>
     </rect>
-    <rect class="day level-1" x="294" y="42" width="10" height="10">
-      <title>Level 1 on 2026-05-27</title>
+    <rect class="day level-2" x="294" y="42" width="10" height="10">
+      <title>Level 2 on 2026-05-27</title>
     </rect>
     <rect class="day level-4" x="294" y="56" width="10" height="10">
       <title>Level 4 on 2026-05-28</title>
@@ -479,17 +479,17 @@
     <rect class="day level-1" x="294" y="70" width="10" height="10">
       <title>Level 1 on 2026-05-29</title>
     </rect>
-    <rect class="day level-1" x="294" y="84" width="10" height="10">
-      <title>Level 1 on 2026-05-30</title>
+    <rect class="day level-2" x="294" y="84" width="10" height="10">
+      <title>Level 2 on 2026-05-30</title>
     </rect>
-    <rect class="day level-1" x="308" y="0" width="10" height="10">
-      <title>Level 1 on 2026-05-31</title>
+    <rect class="day level-2" x="308" y="0" width="10" height="10">
+      <title>Level 2 on 2026-05-31</title>
     </rect>
     <rect class="day level-2" x="308" y="14" width="10" height="10">
       <title>Level 2 on 2026-06-01</title>
     </rect>
-    <rect class="day level-1" x="308" y="28" width="10" height="10">
-      <title>Level 1 on 2026-06-02</title>
+    <rect class="day level-2" x="308" y="28" width="10" height="10">
+      <title>Level 2 on 2026-06-02</title>
     </rect>
     <rect class="day level-3" x="308" y="42" width="10" height="10">
       <title>Level 3 on 2026-06-03</title>
@@ -512,8 +512,8 @@
     <rect class="day level-1" x="322" y="28" width="10" height="10">
       <title>Level 1 on 2026-06-09</title>
     </rect>
-    <rect class="day level-1" x="322" y="42" width="10" height="10">
-      <title>Level 1 on 2026-06-10</title>
+    <rect class="day level-2" x="322" y="42" width="10" height="10">
+      <title>Level 2 on 2026-06-10</title>
     </rect>
     <rect class="day level-1" x="322" y="56" width="10" height="10">
       <title>Level 1 on 2026-06-11</title>
@@ -521,8 +521,8 @@
     <rect class="day level-3" x="322" y="70" width="10" height="10">
       <title>Level 3 on 2026-06-12</title>
     </rect>
-    <rect class="day level-1" x="322" y="84" width="10" height="10">
-      <title>Level 1 on 2026-06-13</title>
+    <rect class="day level-2" x="322" y="84" width="10" height="10">
+      <title>Level 2 on 2026-06-13</title>
     </rect>
     <rect class="day level-3" x="336" y="0" width="10" height="10">
       <title>Level 3 on 2026-06-14</title>
@@ -548,8 +548,8 @@
     <rect class="day level-3" x="350" y="0" width="10" height="10">
       <title>Level 3 on 2026-06-21</title>
     </rect>
-    <rect class="day level-1" x="350" y="14" width="10" height="10">
-      <title>Level 1 on 2026-06-22</title>
+    <rect class="day level-2" x="350" y="14" width="10" height="10">
+      <title>Level 2 on 2026-06-22</title>
     </rect>
     <rect class="day level-2" x="350" y="28" width="10" height="10">
       <title>Level 2 on 2026-06-23</title>
@@ -611,8 +611,8 @@
     <rect class="day level-1" x="392" y="0" width="10" height="10">
       <title>Level 1 on 2026-07-12</title>
     </rect>
-    <rect class="day level-1" x="392" y="14" width="10" height="10">
-      <title>Level 1 on 2026-07-13</title>
+    <rect class="day level-2" x="392" y="14" width="10" height="10">
+      <title>Level 2 on 2026-07-13</title>
     </rect>
     <rect class="day level-3" x="392" y="28" width="10" height="10">
       <title>Level 3 on 2026-07-14</title>
@@ -638,8 +638,8 @@
     <rect class="day level-3" x="406" y="28" width="10" height="10">
       <title>Level 3 on 2026-07-21</title>
     </rect>
-    <rect class="day level-1" x="406" y="42" width="10" height="10">
-      <title>Level 1 on 2026-07-22</title>
+    <rect class="day level-2" x="406" y="42" width="10" height="10">
+      <title>Level 2 on 2026-07-22</title>
     </rect>
     <rect class="day level-1" x="406" y="56" width="10" height="10">
       <title>Level 1 on 2026-07-23</title>
@@ -737,8 +737,8 @@
     <rect class="day level-4" x="476" y="0" width="10" height="10">
       <title>Level 4 on 2026-08-23</title>
     </rect>
-    <rect class="day level-0" x="476" y="14" width="10" height="10">
-      <title>Level 0 on 2026-08-24</title>
+    <rect class="day level-1" x="476" y="14" width="10" height="10">
+      <title>Level 1 on 2026-08-24</title>
     </rect>
     <rect class="day level-0" x="476" y="28" width="10" height="10">
       <title>Level 0 on 2026-08-25</title>
