@@ -30,8 +30,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN_FOR_GRAPH }}
           GITHUB_USERNAME: ${{ github.repository_owner }}
-          LIGHT_THEME: '#ebedf0,#fe9b9a,#fd4f4e,#fc0403,#b10302'
-          DARK_THEME: '#161b22,#650201,#b10302,#fc0403,#fd4f4e'
+          LIGHT_THEME: '#ebedf0,#dde5b3,#c4d279,#abbf40,#78862d'
+          DARK_THEME: '#161b22,#444c1a,#78862d,#abbf40,#c4d279'
 
       - name: Commit and Push generated SVG
         run: |
