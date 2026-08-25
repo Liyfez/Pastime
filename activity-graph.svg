@@ -3,16 +3,16 @@
     .day { rx: 2; ry: 2; shape-rendering: geometricPrecision; }
     .label { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; font-size: 10px; fill: #768390; }
     .level-0 { fill: #ebedf0; }
-    .level-1 { fill: #fe9b9a; }
-    .level-2 { fill: #fd4f4e; }
-    .level-3 { fill: #fc0403; }
-    .level-4 { fill: #b10302; }
+    .level-1 { fill: #dde5b3; }
+    .level-2 { fill: #c4d279; }
+    .level-3 { fill: #abbf40; }
+    .level-4 { fill: #78862d; }
     @media (prefers-color-scheme: dark) {
       .level-0 { fill: #161b22; }
-      .level-1 { fill: #650201; }
-      .level-2 { fill: #b10302; }
-      .level-3 { fill: #fc0403; }
-      .level-4 { fill: #fd4f4e; }
+      .level-1 { fill: #444c1a; }
+      .level-2 { fill: #78862d; }
+      .level-3 { fill: #abbf40; }
+      .level-4 { fill: #c4d279; }
     }
   </style>
   <g transform="translate(30, 20)">
