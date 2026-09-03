@@ -764,8 +764,8 @@
     <rect class="day level-1" x="490" y="28" width="10" height="10">
       <title>Level 1 on 2026-09-01</title>
     </rect>
-    <rect class="day level-0" x="490" y="42" width="10" height="10">
-      <title>Level 0 on 2026-09-02</title>
+    <rect class="day level-3" x="490" y="42" width="10" height="10">
+      <title>Level 3 on 2026-09-02</title>
     </rect>
     <rect class="day level-0" x="490" y="56" width="10" height="10">
       <title>Level 0 on 2026-09-03</title>
